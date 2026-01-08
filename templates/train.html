@@ -1,0 +1,901 @@
+{% extends "navsidebar.html" %}
+
+{% block title %}
+    MediPredict | Train Model
+{% endblock title %}
+
+{% block style %}
+    :root {
+        --primary: #4a6cf7;
+        --primary-dark: #3a5ce5;
+        --primary-light: #6b8cff;
+        --secondary: #764ba2;
+        --accent: #00d4ff;
+        --dark: #1a1a2e;
+        --light: #f8fafc;
+        --gray: #64748b;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #06b6d4;
+    }
+
+    /* ==================== PAGE HEADER ==================== */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: 10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .page-header p {
+        margin: 0.5rem 0 0;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ==================== TRAINING CARD ==================== */
+    .training-card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .training-card-body {
+        padding: 3rem 2rem;
+        text-align: center;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .training-card-body::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.05), rgba(118, 75, 162, 0.05));
+        border-radius: 50%;
+    }
+
+    .training-card-body::after {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        left: -50px;
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(6, 182, 212, 0.05));
+        border-radius: 50%;
+    }
+
+    /* Training Icon */
+    .training-icon-wrapper {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 15px 40px rgba(74, 108, 247, 0.3);
+    }
+
+    .training-icon-wrapper::before {
+        content: '';
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        opacity: 0.2;
+        animation: pulse-ring 2s ease-out infinite;
+    }
+
+    @keyframes pulse-ring {
+        0% {
+            transform: scale(1);
+            opacity: 0.2;
+        }
+        100% {
+            transform: scale(1.3);
+            opacity: 0;
+        }
+    }
+
+    .training-icon-wrapper i {
+        font-size: 3.5rem;
+        color: white;
+    }
+
+    .training-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.75rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .training-description {
+        color: var(--gray);
+        max-width: 500px;
+        margin: 0 auto 2rem;
+        position: relative;
+        z-index: 1;
+        line-height: 1.6;
+    }
+
+    /* Training Button */
+    .btn-train {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        width: 100%;
+        max-width: 400px;
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, var(--success), #34d399);
+        color: white;
+        border: none;
+        border-radius: 1rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+    }
+
+    .btn-train::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-train:hover::before {
+        left: 100%;
+    }
+
+    .btn-train:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-train:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .btn-train i {
+        font-size: 1.75rem;
+    }
+
+    .btn-train .spinner-border {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    /* Features List */
+    .training-features {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .training-feature {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--gray);
+    }
+
+    .training-feature i {
+        font-size: 1.25rem;
+        color: var(--success);
+    }
+
+    /* ==================== SUCCESS ALERT ==================== */
+    .success-alert {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        border: 2px solid rgba(16, 185, 129, 0.3);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .success-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--success), #34d399);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .success-icon i {
+        font-size: 2rem;
+        color: white;
+    }
+
+    .success-content h4 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--success);
+        margin-bottom: 0.25rem;
+    }
+
+    .success-content p {
+        color: var(--gray);
+        margin: 0;
+    }
+
+    /* ==================== STATS GRID ==================== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 992px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--gray);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* ==================== METRICS CARD ==================== */
+    .metrics-card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .metrics-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .metrics-header i {
+        font-size: 1.5rem;
+        color: var(--primary);
+    }
+
+    .metrics-header h6 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin: 0;
+    }
+
+    .metrics-body {
+        padding: 1.5rem;
+    }
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+
+    @media (max-width: 992px) {
+        .metrics-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .metrics-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .metric-item {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .metric-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .metric-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .metric-label {
+        font-size: 0.75rem;
+        color: var(--gray);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .metric-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark);
+    }
+
+    .metric-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .metric-icon.success {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+    }
+
+    .metric-icon.info {
+        background: rgba(6, 182, 212, 0.1);
+        color: var(--info);
+    }
+
+    .metric-icon i {
+        font-size: 1.25rem;
+    }
+
+    /* ==================== INFO CARDS ==================== */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .info-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .info-card-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .info-card-icon.primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+
+    .info-card-icon.success {
+        background: linear-gradient(135deg, var(--success), #34d399);
+    }
+
+    .info-card-icon i {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .info-card-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin: 0;
+    }
+
+    .info-card-content {
+        color: var(--gray);
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .info-card-content ul {
+        margin: 0.5rem 0 0;
+        padding-left: 1.25rem;
+    }
+
+    .info-card-content li {
+        margin-bottom: 0.25rem;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+            border-radius: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .training-card-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .training-icon-wrapper {
+            width: 100px;
+            height: 100px;
+        }
+
+        .training-icon-wrapper i {
+            font-size: 3rem;
+        }
+
+        .training-title {
+            font-size: 1.25rem;
+        }
+
+        .btn-train {
+            padding: 1.25rem 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-train i {
+            font-size: 1.5rem;
+        }
+
+        .training-features {
+            gap: 1rem;
+        }
+
+        .training-feature {
+            font-size: 0.8rem;
+        }
+
+        .success-alert {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .main-content .p-3,
+        .main-content .p-md-4 {
+            padding: 1rem !important;
+        }
+
+        .training-card-body {
+            padding: 1.5rem 1rem;
+        }
+
+        .training-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+        }
+
+        .training-icon-wrapper i {
+            font-size: 2.5rem;
+        }
+
+        .btn-train {
+            padding: 1rem;
+            font-size: 1rem;
+        }
+
+        .training-features {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-card {
+            padding: 1.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+        }
+
+        .metrics-body {
+            padding: 1rem;
+        }
+
+        .metric-item {
+            padding: 0.75rem;
+        }
+    }
+
+    /* ==================== LOADING STATE ==================== */
+    .btn-train.loading {
+        background: linear-gradient(135deg, #9ca3af, #6b7280);
+    }
+
+    .btn-train.loading::before {
+        display: none;
+    }
+
+{% endblock style %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="col-lg-9 col-xl-10 main-content" id="mainContent">
+    <div class="p-3 p-md-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>
+                <i class="material-icons">model_training</i>
+                Train Model
+            </h1>
+            <p>Train machine learning models to predict medicine demand patterns</p>
+        </div>
+
+        <!-- Training Card -->
+        <div class="training-card">
+            <div class="training-card-body">
+                <div class="training-icon-wrapper">
+                    <i class="material-icons">psychology</i>
+                </div>
+                
+                <h2 class="training-title">Train Demand Prediction Model</h2>
+                <p class="training-description">
+                    Our XGBoost-powered machine learning model analyzes your historical pharmacy data 
+                    to accurately predict medicine demand levels and optimize inventory management.
+                </p>
+
+                <form action="{% url 'trainModel' %}" method="POST" id="trainModelForm">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-train" id="trainBtn">
+                        <span id="trainBtnText">
+                            <i class="material-icons">play_circle</i>
+                            Start Training
+                        </span>
+                        <span id="trainBtnLoading" class="d-none">
+                            <span class="spinner-border" role="status"></span>
+                            Training in progress...
+                        </span>
+                    </button>
+                </form>
+
+                <div class="training-features">
+                    <div class="training-feature">
+                        <i class="material-icons">speed</i>
+                        <span>Fast Training</span>
+                    </div>
+                    <div class="training-feature">
+                        <i class="material-icons">analytics</i>
+                        <span>High Accuracy</span>
+                    </div>
+                    <div class="training-feature">
+                        <i class="material-icons">auto_awesome</i>
+                        <span>XGBoost Algorithm</span>
+                    </div>
+                    <div class="training-feature">
+                        <i class="material-icons">security</i>
+                        <span>Secure Processing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        {% if show_results %}
+        <!-- Training Results -->
+        <div id="trainingResults" style="margin-top: 2rem;">
+            <!-- Success Alert -->
+            <div class="success-alert">
+                <div class="success-icon">
+                    <i class="material-icons">check_circle</i>
+                </div>
+                <div class="success-content">
+                    <h4>Training {{ status }}!</h4>
+                    <p>Model trained successfully and ready for predictions</p>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">{{ accuracy }}%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ training_minutes }}</div>
+                    <div class="stat-label">Minutes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ record_count }}</div>
+                    <div class="stat-label">Records</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ status }}</div>
+                    <div class="stat-label">Status</div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="metrics-card">
+                <div class="metrics-header">
+                    <i class="material-icons">assessment</i>
+                    <h6>Performance Metrics</h6>
+                </div>
+                <div class="metrics-body">
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-info">
+                                <span class="metric-label">Precision</span>
+                                <span class="metric-value">{{ precision }}%</span>
+                            </div>
+                            <div class="metric-icon success">
+                                <i class="material-icons">check_circle</i>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-info">
+                                <span class="metric-label">Recall</span>
+                                <span class="metric-value">{{ recall }}%</span>
+                            </div>
+                            <div class="metric-icon success">
+                                <i class="material-icons">check_circle</i>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-info">
+                                <span class="metric-label">F1-Score</span>
+                                <span class="metric-value">{{ f1_score }}%</span>
+                            </div>
+                            <div class="metric-icon success">
+                                <i class="material-icons">check_circle</i>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-info">
+                                <span class="metric-label">Inference Time</span>
+                                <span class="metric-value">{{ inference_time }}s</span>
+                            </div>
+                            <div class="metric-icon info">
+                                <i class="material-icons">speed</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+document.addEventListener('DOMContentLoaded', function() {
+    const trainForm = document.getElementById('trainModelForm');
+    const trainBtn = document.getElementById('trainBtn');
+    const trainBtnText = document.getElementById('trainBtnText');
+    const trainBtnLoading = document.getElementById('trainBtnLoading');
+    
+    // Handle form submission
+    if (trainForm && trainBtn && trainBtnText && trainBtnLoading) {
+        trainForm.addEventListener('submit', function(e) {
+            // Show loading state
+            trainBtn.disabled = true;
+            trainBtn.classList.add('loading');
+            trainBtnText.classList.add('d-none');
+            trainBtnLoading.classList.remove('d-none');
+        });
+    }
+    
+    // Add hover effects
+    if (trainBtn) {
+        trainBtn.addEventListener('mouseenter', function() {
+            if (!trainBtn.disabled) {
+                this.style.transform = 'translateY(-3px)';
+                this.style.boxShadow = '0 15px 40px rgba(16, 185, 129, 0.4)';
+            }
+        });
+        
+        trainBtn.addEventListener('mouseleave', function() {
+            if (!trainBtn.disabled) {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            }
+        });
+    }
+    
+    // Scroll to results if they exist
+    {% if show_results %}
+    const resultsSection = document.getElementById('trainingResults');
+    if (resultsSection) {
+        setTimeout(() => {
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+    }
+    {% endif %}
+    
+    // Animate stats on scroll
+    const statCards = document.querySelectorAll('.stat-card');
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 100);
+            }
+        });
+    }, observerOptions);
+    
+    statCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.5s ease';
+        observer.observe(card);
+    });
+    
+    // Animate metric items
+    const metricItems = document.querySelectorAll('.metric-item');
+    metricItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-20px)';
+        item.style.transition = 'all 0.5s ease';
+        
+        setTimeout(() => {
+            item.style.opacity = '1';
+            item.style.transform = 'translateX(0)';
+        }, 500 + (index * 100));
+    });
+});
+{% endblock script %}

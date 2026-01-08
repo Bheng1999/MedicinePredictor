@@ -1,0 +1,631 @@
+{% extends "navsidebar.html" %}
+
+{% block title %}
+    MediPredict | Make Predictions
+{% endblock title %}
+
+{% block style %}
+
+    :root {
+        --primary: #4a6cf7;
+        --primary-dark: #3a5ce5;
+        --primary-light: #6b8cff;
+        --secondary: #764ba2;
+        --accent: #00d4ff;
+        --dark: #1a1a2e;
+        --light: #f8fafc;
+        --gray: #64748b;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #06b6d4;
+    }
+
+    /* ==================== PAGE HEADER ==================== */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: 10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .page-header p {
+        margin: 0.5rem 0 0;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ==================== PREDICTION CARD ==================== */
+    .prediction-card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .prediction-card-body {
+        padding: 3rem 2rem;
+        text-align: center;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .prediction-card-body::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.05), rgba(118, 75, 162, 0.05));
+        border-radius: 50%;
+    }
+
+    .prediction-card-body::after {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        left: -50px;
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(6, 182, 212, 0.05));
+        border-radius: 50%;
+    }
+
+    /* Prediction Icon */
+    .prediction-icon-wrapper {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 15px 40px rgba(74, 108, 247, 0.3);
+    }
+
+    .prediction-icon-wrapper::before {
+        content: '';
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        opacity: 0.2;
+        animation: pulse-ring 2s ease-out infinite;
+    }
+
+    @keyframes pulse-ring {
+        0% {
+            transform: scale(1);
+            opacity: 0.2;
+        }
+        100% {
+            transform: scale(1.3);
+            opacity: 0;
+        }
+    }
+
+    .prediction-icon-wrapper i {
+        font-size: 3.5rem;
+        color: white;
+    }
+
+    .prediction-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.75rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .prediction-description {
+        color: var(--gray);
+        max-width: 500px;
+        margin: 0 auto 2.5rem;
+        position: relative;
+        z-index: 1;
+        line-height: 1.6;
+    }
+
+    /* ==================== DATE FORM ==================== */
+    .prediction-form {
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .date-inputs-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 576px) {
+        .date-inputs-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .date-input-group {
+        text-align: left;
+    }
+
+    .date-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .date-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .date-input-wrapper:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(74, 108, 247, 0.1);
+    }
+
+    .date-input-icon {
+        padding: 0 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.1), rgba(118, 75, 162, 0.1));
+        height: 100%;
+        min-height: 56px;
+    }
+
+    .date-input-icon i {
+        font-size: 1.5rem;
+        color: var(--primary);
+    }
+
+    .date-input {
+        flex: 1;
+        border: none;
+        padding: 1rem;
+        font-size: 1rem;
+        color: var(--dark);
+        background: transparent;
+        outline: none;
+        min-height: 56px;
+    }
+
+    .date-input::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        transition: background 0.2s ease;
+    }
+
+    .date-input::-webkit-calendar-picker-indicator:hover {
+        background: rgba(74, 108, 247, 0.1);
+    }
+
+    .date-hint {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--gray);
+        margin-top: 0.5rem;
+        padding-left: 0.25rem;
+    }
+
+    /* ==================== PREDICT BUTTON ==================== */
+    .btn-predict {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 1rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-predict::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-predict:hover::before {
+        left: 100%;
+    }
+
+    .btn-predict:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(74, 108, 247, 0.4);
+    }
+
+    .btn-predict:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .btn-predict i {
+        font-size: 1.75rem;
+    }
+
+    .btn-predict .spinner-border {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .btn-predict.loading {
+        background: linear-gradient(135deg, #9ca3af, #6b7280);
+    }
+
+    .btn-predict.loading::before {
+        display: none;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+            border-radius: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .prediction-card-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .prediction-icon-wrapper {
+            width: 100px;
+            height: 100px;
+        }
+
+        .prediction-icon-wrapper i {
+            font-size: 3rem;
+        }
+
+        .prediction-title {
+            font-size: 1.25rem;
+        }
+
+        .btn-predict {
+            padding: 1.25rem 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-predict i {
+            font-size: 1.5rem;
+        }
+
+        .prediction-features {
+            gap: 1rem;
+        }
+
+        .prediction-feature {
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .main-content .p-3,
+        .main-content .p-md-4 {
+            padding: 1rem !important;
+        }
+
+        .prediction-card-body {
+            padding: 1.5rem 1rem;
+        }
+
+        .prediction-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+        }
+
+        .prediction-icon-wrapper i {
+            font-size: 2.5rem;
+        }
+
+        .btn-predict {
+            padding: 1rem;
+            font-size: 1rem;
+        }
+
+        .prediction-features {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .quick-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-quick {
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .date-input {
+            padding: 0.875rem;
+            font-size: 0.9rem;
+        }
+
+        .date-input-icon {
+            padding: 0 0.75rem;
+            min-height: 50px;
+        }
+
+        .date-input-icon i {
+            font-size: 1.25rem;
+        }
+    }
+
+    /* ==================== VALIDATION STATES ==================== */
+    .date-input-wrapper.error {
+        border-color: var(--danger);
+    }
+
+    .date-input-wrapper.error .date-input-icon {
+        background: rgba(239, 68, 68, 0.1);
+    }
+
+    .date-input-wrapper.error .date-input-icon i {
+        color: var(--danger);
+    }
+
+    .error-message {
+        color: var(--danger);
+        font-size: 0.75rem;
+        margin-top: 0.5rem;
+        display: none;
+    }
+
+    .error-message.show {
+        display: block;
+    }
+
+{% endblock style %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="col-lg-9 col-xl-10 main-content" id="mainContent">
+    <div class="p-3 p-md-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>
+                <i class="material-icons">trending_up</i>
+                Make Predictions
+            </h1>
+            <p>Generate demand forecasts for your pharmacy inventory</p>
+        </div>
+
+        <!-- Prediction Card -->
+        <div class="prediction-card">
+            <div class="prediction-card-body">
+                <div class="prediction-icon-wrapper">
+                    <i class="material-icons">insights</i>
+                </div>
+                
+                <h2 class="prediction-title">Medicine Demand Prediction</h2>
+                <p class="prediction-description">
+                    Use our trained XGBoost model to forecast future medicine demand. 
+                    Select a date range to generate accurate predictions for your inventory planning.
+                </p>
+
+                <form action="{% url 'makePrediction' %}" method="POST" enctype="multipart/form-data" id="predictionForm" class="prediction-form">
+                    {% csrf_token %}
+                    
+                    <!-- Date Inputs -->
+                    <div class="date-inputs-grid">
+                        <div class="date-input-group">
+                            <label class="date-label" for="dateFrom">From Date</label>
+                            <div class="date-input-wrapper" id="dateFromWrapper">
+                                <div class="date-input-icon">
+                                    <i class="material-icons">calendar_today</i>
+                                </div>
+                                <input type="date" class="date-input" id="dateFrom" name="date_from" required>
+                            </div>
+                            <span class="date-hint">Start date for predictions</span>
+                            <span class="error-message" id="dateFromError">Please select a valid start date</span>
+                        </div>
+                        <div class="date-input-group">
+                            <label class="date-label" for="dateTo">To Date</label>
+                            <div class="date-input-wrapper" id="dateToWrapper">
+                                <div class="date-input-icon">
+                                    <i class="material-icons">event</i>
+                                </div>
+                                <input type="date" class="date-input" id="dateTo" name="date_to" required>
+                            </div>
+                            <span class="date-hint">End date for predictions</span>
+                            <span class="error-message" id="dateToError">End date must be after start date</span>
+                        </div>
+                    </div>
+
+                    <!-- Predict Button -->
+                    <button type="submit" class="btn-predict" id="predictBtn">
+                        <span id="predictBtnText">
+                            <i class="material-icons">play_circle</i>
+                            Generate Predictions
+                        </span>
+                        <span id="predictBtnLoading" class="d-none">
+                            <span class="spinner-border" role="status"></span>
+                            Processing predictions...
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('predictionForm');
+    const predictBtn = document.getElementById('predictBtn');
+    const predictBtnText = document.getElementById('predictBtnText');
+    const predictBtnLoading = document.getElementById('predictBtnLoading');
+    const dateFrom = document.getElementById('dateFrom');
+    const dateTo = document.getElementById('dateTo');
+    const dateFromWrapper = document.getElementById('dateFromWrapper');
+    const dateToWrapper = document.getElementById('dateToWrapper');
+    const dateFromError = document.getElementById('dateFromError');
+    const dateToError = document.getElementById('dateToError');
+
+    // Set minimum dates to today
+    const today = new Date().toISOString().split('T')[0];
+    dateFrom.min = today;
+    dateTo.min = today;
+    dateFrom.value = today;
+
+    // Set default end date (7 days from now)
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    dateTo.value = nextWeek.toISOString().split('T')[0];
+
+    // Update dateTo min when dateFrom changes
+    dateFrom.addEventListener('change', function() {
+        dateTo.min = this.value;
+        if (dateTo.value < this.value) {
+            dateTo.value = this.value;
+        }
+        clearErrors();
+    });
+
+    dateTo.addEventListener('change', function() {
+        clearErrors();
+    });
+
+    // Form validation
+    function validateForm() {
+        let isValid = true;
+        clearErrors();
+
+        if (!dateFrom.value) {
+            dateFromWrapper.classList.add('error');
+            dateFromError.classList.add('show');
+            isValid = false;
+        }
+
+        if (!dateTo.value) {
+            dateToWrapper.classList.add('error');
+            dateToError.textContent = 'Please select an end date';
+            dateToError.classList.add('show');
+            isValid = false;
+        } else if (dateFrom.value > dateTo.value) {
+            dateToWrapper.classList.add('error');
+            dateToError.textContent = 'End date must be after start date';
+            dateToError.classList.add('show');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    function clearErrors() {
+        dateFromWrapper.classList.remove('error');
+        dateToWrapper.classList.remove('error');
+        dateFromError.classList.remove('show');
+        dateToError.classList.remove('show');
+    }
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+            return;
+        }
+
+        // Show loading state
+        predictBtn.disabled = true;
+        predictBtn.classList.add('loading');
+        predictBtnText.classList.add('d-none');
+        predictBtnLoading.classList.remove('d-none');
+    });
+
+    // Button hover effects
+    predictBtn.addEventListener('mouseenter', function() {
+        if (!predictBtn.disabled) {
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 15px 40px rgba(74, 108, 247, 0.4)';
+        }
+    });
+
+    predictBtn.addEventListener('mouseleave', function() {
+        if (!predictBtn.disabled) {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        }
+    });
+});
+{% endblock script %}

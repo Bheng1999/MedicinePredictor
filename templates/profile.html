@@ -1,0 +1,1111 @@
+{% extends "navsidebar.html" %}
+
+{% block title %}
+    MediPredict | My Profile
+{% endblock title %}
+
+{% block style %}
+
+    :root {
+        --primary: #4a6cf7;
+        --primary-dark: #3a5ce5;
+        --primary-light: #6b8cff;
+        --secondary: #764ba2;
+        --accent: #00d4ff;
+        --dark: #1a1a2e;
+        --light: #f8fafc;
+        --gray: #64748b;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #06b6d4;
+    }
+
+    /* ==================== PAGE HEADER ==================== */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: 10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .page-header p {
+        margin: 0.5rem 0 0;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ==================== PROFILE GRID ==================== */
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 2rem;
+    }
+
+    @media (max-width: 1200px) {
+        .profile-grid {
+            grid-template-columns: 300px 1fr;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ==================== PROFILE CARD ==================== */
+    .profile-card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .profile-card-body {
+        padding: 2rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-card-body::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.05), rgba(118, 75, 162, 0.05));
+        border-radius: 50%;
+    }
+
+    .profile-card-body::after {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        left: -50px;
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(6, 182, 212, 0.05));
+        border-radius: 50%;
+    }
+
+    /* ==================== SIDEBAR PROFILE ==================== */
+    .profile-sidebar .profile-card-body {
+        text-align: center;
+        padding: 2.5rem 2rem;
+    }
+
+    .avatar-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        z-index: 1;
+    }
+
+    .avatar {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        font-weight: 700;
+        box-shadow: 0 15px 40px rgba(74, 108, 247, 0.3);
+        position: relative;
+    }
+
+    .avatar::before {
+        content: '';
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        opacity: 0.2;
+        animation: pulse-ring 2s ease-out infinite;
+    }
+
+    @keyframes pulse-ring {
+        0% {
+            transform: scale(1);
+            opacity: 0.2;
+        }
+        100% {
+            transform: scale(1.3);
+            opacity: 0;
+        }
+    }
+
+    .avatar-edit {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        width: 36px;
+        height: 36px;
+        background: white;
+        border: 3px solid var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 2;
+    }
+
+    .avatar-edit:hover {
+        background: var(--primary);
+    }
+
+    .avatar-edit i {
+        font-size: 1rem;
+        color: var(--primary);
+        transition: color 0.3s ease;
+    }
+
+    .avatar-edit:hover i {
+        color: white;
+    }
+
+    .profile-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-email {
+        color: var(--gray);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .role-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.25rem;
+        border-radius: 2rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .role-badge.admin {
+        background: linear-gradient(135deg, var(--danger), #dc2626);
+        color: white;
+    }
+
+    .role-badge.pharmacist {
+        background: linear-gradient(135deg, var(--success), #059669);
+        color: white;
+    }
+
+    .role-badge i {
+        font-size: 1rem;
+    }
+
+    /* ==================== PROFILE STATS ==================== */
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        position: relative;
+        z-index: 1;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem 0.5rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-number {
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: var(--gray);
+        margin-top: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* ==================== TABS ==================== */
+    .profile-tabs {
+        display: flex;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .tab-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.875rem 1rem;
+        border: none;
+        background: transparent;
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .tab-btn:hover {
+        color: var(--dark);
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    .tab-btn.active {
+        background: white;
+        color: var(--primary);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .tab-btn i {
+        font-size: 1.25rem;
+    }
+
+    .tab-content {
+        display: none;
+        position: relative;
+        z-index: 1;
+    }
+
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==================== FORM STYLES ==================== */
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-section-title i {
+        color: var(--primary);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .input-wrapper:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(74, 108, 247, 0.1);
+    }
+
+    .input-wrapper.disabled {
+        background: #f1f5f9;
+    }
+
+    .input-icon {
+        padding: 0 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.1), rgba(118, 75, 162, 0.1));
+        height: 100%;
+        min-height: 52px;
+    }
+
+    .input-icon i {
+        font-size: 1.25rem;
+        color: var(--primary);
+    }
+
+    .form-input {
+        flex: 1;
+        border: none;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        color: var(--dark);
+        background: transparent;
+        outline: none;
+        min-height: 52px;
+    }
+
+    .form-input:disabled {
+        color: var(--gray);
+        cursor: not-allowed;
+    }
+
+    .form-hint {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--gray);
+        margin-top: 0.5rem;
+    }
+
+    /* ==================== BUTTONS ==================== */
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn i {
+        font-size: 1.25rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-primary:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(74, 108, 247, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: var(--dark);
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e1;
+        transform: translateY(-2px);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, var(--danger), #dc2626);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(239, 68, 68, 0.4);
+    }
+
+    /* ==================== PASSWORD STRENGTH ==================== */
+    .password-strength {
+        margin-top: 0.5rem;
+    }
+
+    .strength-bar {
+        height: 4px;
+        background: #e2e8f0;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .strength-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+        width: 0%;
+    }
+
+    .strength-fill.weak { width: 25%; background: var(--danger); }
+    .strength-fill.fair { width: 50%; background: var(--warning); }
+    .strength-fill.good { width: 75%; background: var(--info); }
+    .strength-fill.strong { width: 100%; background: var(--success); }
+
+    .strength-text {
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+        font-weight: 500;
+    }
+
+    .strength-text.weak { color: var(--danger); }
+    .strength-text.fair { color: var(--warning); }
+    .strength-text.good { color: var(--info); }
+    .strength-text.strong { color: var(--success); }
+
+    /* ==================== SESSION LIST ==================== */
+    .session-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem;
+        background: white;
+        border-radius: 1rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+    }
+
+    .session-item:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .session-item.current {
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.05), rgba(118, 75, 162, 0.05));
+        border: 2px solid var(--primary);
+    }
+
+    .session-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.1), rgba(118, 75, 162, 0.1));
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+    }
+
+    .session-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .session-info h4 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin: 0 0 0.25rem;
+    }
+
+    .session-info p {
+        font-size: 0.8rem;
+        color: var(--gray);
+        margin: 0;
+    }
+
+    .session-badge {
+        padding: 0.375rem 0.875rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-sm i {
+        font-size: 1rem;
+    }
+
+    /* ==================== ALERTS ==================== */
+    .alert {
+        padding: 1rem 1.25rem;
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .alert i {
+        font-size: 1.5rem;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .alert-error {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .alert-info {
+        background: rgba(74, 108, 247, 0.1);
+        color: var(--primary);
+        border: 1px solid rgba(74, 108, 247, 0.2);
+    }
+
+    /* ==================== DIVIDER ==================== */
+    .section-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        margin: 2rem 0;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+            border-radius: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .profile-card-body {
+            padding: 1.5rem;
+        }
+
+        .profile-tabs {
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1 1 45%;
+            padding: 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .tab-btn span.tab-text {
+            display: none;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            font-size: 2.5rem;
+        }
+
+        .profile-name {
+            font-size: 1.25rem;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .main-content .p-3,
+        .main-content .p-md-4 {
+            padding: 1rem !important;
+        }
+
+        .form-grid {
+            gap: 1rem;
+        }
+
+        .activity-item,
+        .session-item,
+        .notification-item {
+            padding: 1rem;
+        }
+
+        .session-item {
+            flex-wrap: wrap;
+        }
+
+        .session-item .btn {
+            width: 100%;
+            margin-top: 0.75rem;
+        }
+    }
+
+{% endblock style %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="col-lg-9 col-xl-10 main-content" id="mainContent">
+    <div class="p-3 p-md-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>
+                <i class="material-icons">account_circle</i>
+                My Profile
+            </h1>
+            <p>Manage your account settings and preferences</p>
+        </div>
+
+        <!-- Profile Grid -->
+        <div class="profile-grid">
+            <!-- Sidebar -->
+            <div class="profile-sidebar">
+                <div class="profile-card">
+                    <div class="profile-card-body">
+                        <div class="avatar-container">
+                            <div class="avatar">
+                                {{ user.first_name|slice:":1"|upper|default:"U" }}{{ user.last_name|slice:":1"|upper }}
+                            </div>
+                        </div>
+                        
+                        <h2 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h2>
+                        <p class="profile-email">{{ user.email }}</p>
+                        
+                        <span class="role-badge {% if user.role == 'admin' %}admin{% else %}pharmacist{% endif %}">
+                            <i class="material-icons">
+                                {% if user.role == 'admin' %}admin_panel_settings{% else %}local_pharmacy{% endif %}
+                            </i>
+                            {{ user.role|title|default:"Pharmacist" }}
+                        </span>
+
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="profile-main">
+                <div class="profile-card">
+                    <div class="profile-card-body">
+                        <!-- Tabs -->
+                        <div class="profile-tabs">
+                            <button class="tab-btn active" data-tab="personal">
+                                <i class="material-icons">person</i>
+                                <span class="tab-text">Personal Info</span>
+                            </button>
+                            <button class="tab-btn" data-tab="security">
+                                <i class="material-icons">lock</i>
+                                <span class="tab-text">Security</span>
+                            </button>
+                        </div>
+
+                        <!-- Personal Info Tab -->
+                        <div class="tab-content active" id="personal">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }}">
+                                        <i class="material-icons">
+                                            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+                                        </i>
+                                        <span>{{ message }}</span>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                            <h3 class="form-section-title">
+                                <i class="material-icons">edit</i>
+                                Edit Personal Information
+                            </h3>
+
+                            <form method="post" action="{% url 'profileUpdate' %}" id="profileForm">
+                                {% csrf_token %}
+                                
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">First Name</label>
+                                        <div class="input-wrapper">
+                                            <div class="input-icon">
+                                                <i class="material-icons">badge</i>
+                                            </div>
+                                            <input type="text" class="form-input" name="first_name" value="{{ user.first_name }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Last Name</label>
+                                        <div class="input-wrapper">
+                                            <div class="input-icon">
+                                                <i class="material-icons">badge</i>
+                                            </div>
+                                            <input type="text" class="form-input" name="last_name" value="{{ user.last_name }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Email Address</label>
+                                    <div class="input-wrapper">
+                                        <div class="input-icon">
+                                            <i class="material-icons">email</i>
+                                        </div>
+                                        <input type="email" class="form-input" name="email" value="{{ user.email }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Username</label>
+                                        <div class="input-wrapper disabled">
+                                            <div class="input-icon">
+                                                <i class="material-icons">alternate_email</i>
+                                            </div>
+                                            <input type="text" class="form-input" value="{{ user.username }}" disabled>
+                                        </div>
+                                        <span class="form-hint">Username cannot be changed</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Role</label>
+                                        <div class="input-wrapper disabled">
+                                            <div class="input-icon">
+                                                <i class="material-icons">work</i>
+                                            </div>
+                                            <input type="text" class="form-input" value="{{ user.role|title|default:'Pharmacist' }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Member Since</label>
+                                    <div class="input-wrapper disabled">
+                                        <div class="input-icon">
+                                            <i class="material-icons">calendar_today</i>
+                                        </div>
+                                        <input type="text" class="form-input" value="{{ user.date_joined|date:'F d, Y' }}" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="material-icons">save</i>
+                                        Save Changes
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="material-icons">refresh</i>
+                                        Reset
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Security Tab -->
+                        <div class="tab-content" id="security">
+                            <h3 class="form-section-title">
+                                <i class="material-icons">vpn_key</i>
+                                Change Password
+                            </h3>
+
+                            <form method="post" action="{% url 'passwordChange' %}" id="passwordForm">
+                                {% csrf_token %}
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Current Password</label>
+                                    <div class="input-wrapper">
+                                        <div class="input-icon">
+                                            <i class="material-icons">lock</i>
+                                        </div>
+                                        <input type="password" class="form-input" name="old_password" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">New Password</label>
+                                    <div class="input-wrapper">
+                                        <div class="input-icon">
+                                            <i class="material-icons">lock_open</i>
+                                        </div>
+                                        <input type="password" class="form-input" name="new_password1" id="newPassword" required>
+                                    </div>
+                                    <div class="password-strength">
+                                        <div class="strength-bar">
+                                            <div class="strength-fill" id="strengthFill"></div>
+                                        </div>
+                                        <div class="strength-text" id="strengthText"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Confirm New Password</label>
+                                    <div class="input-wrapper">
+                                        <div class="input-icon">
+                                            <i class="material-icons">lock_reset</i>
+                                        </div>
+                                        <input type="password" class="form-input" name="new_password2" id="confirmPassword" required>
+                                    </div>
+                                    <span class="form-hint" id="passwordMatch"></span>
+                                </div>
+
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="material-icons">vpn_key</i>
+                                        Update Password
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="section-divider"></div>
+
+                            <h3 class="form-section-title">
+                                <i class="material-icons">devices</i>
+                                Active Sessions
+                            </h3>
+
+                            <div class="session-list">
+                                <div class="session-item current">
+                                    <div class="session-icon">
+                                        <i class="material-icons">computer</i>
+                                    </div>
+                                    <div class="session-info">
+                                        <h4>Windows • Chrome Browser</h4>
+                                        <p>{{ request.META.REMOTE_ADDR }} • Last active: Now</p>
+                                    </div>
+                                    <span class="session-badge">Current</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab Switching
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active from all
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+
+            // Add active to clicked
+            this.classList.add('active');
+            document.getElementById(this.dataset.tab).classList.add('active');
+        });
+    });
+
+    // Password Strength Checker
+    const newPassword = document.getElementById('newPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+    const passwordMatch = document.getElementById('passwordMatch');
+
+    if (newPassword) {
+        newPassword.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/\d/)) strength++;
+            if (password.match(/[^a-zA-Z\d]/)) strength++;
+
+            // Reset classes
+            strengthFill.className = 'strength-fill';
+            strengthText.className = 'strength-text';
+
+            if (password.length === 0) {
+                strengthFill.style.width = '0%';
+                strengthText.textContent = '';
+            } else if (strength <= 1) {
+                strengthFill.classList.add('weak');
+                strengthText.classList.add('weak');
+                strengthText.textContent = 'Weak - Add uppercase, numbers, symbols';
+            } else if (strength === 2) {
+                strengthFill.classList.add('fair');
+                strengthText.classList.add('fair');
+                strengthText.textContent = 'Fair - Add more complexity';
+            } else if (strength === 3) {
+                strengthFill.classList.add('good');
+                strengthText.classList.add('good');
+                strengthText.textContent = 'Good - Almost there!';
+            } else {
+                strengthFill.classList.add('strong');
+                strengthText.classList.add('strong');
+                strengthText.textContent = 'Strong - Excellent password!';
+            }
+
+            checkPasswordMatch();
+        });
+    }
+
+    if (confirmPassword) {
+        confirmPassword.addEventListener('input', checkPasswordMatch);
+    }
+
+    function checkPasswordMatch() {
+        if (!confirmPassword || confirmPassword.value.length === 0) {
+            passwordMatch.textContent = '';
+            passwordMatch.style.color = '';
+            return;
+        }
+
+        if (newPassword.value === confirmPassword.value) {
+            passwordMatch.innerHTML = '<i class="material-icons" style="font-size: 14px; vertical-align: middle;">check_circle</i> Passwords match';
+            passwordMatch.style.color = 'var(--success)';
+        } else {
+            passwordMatch.innerHTML = '<i class="material-icons" style="font-size: 14px; vertical-align: middle;">cancel</i> Passwords do not match';
+            passwordMatch.style.color = 'var(--danger)';
+        }
+    }
+
+    // Avatar Edit
+    const avatarEdit = document.getElementById('avatarEdit');
+    if (avatarEdit) {
+        avatarEdit.addEventListener('click', function() {
+            // Implement file upload or show modal
+            alert('Photo upload feature coming soon!');
+        });
+    }
+
+    // Form submission with loading state
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        profileForm.addEventListener('submit', function() {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
+        });
+    }
+
+    // Button hover effects
+    document.querySelectorAll('.btn-primary').forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            if (!this.disabled) {
+                this.style.transform = 'translateY(-3px)';
+                this.style.boxShadow = '0 15px 40px rgba(74, 108, 247, 0.4)';
+            }
+        });
+
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        });
+    });
+});
+{% endblock script %}

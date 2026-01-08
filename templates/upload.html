@@ -1,0 +1,1272 @@
+{% extends "navsidebar.html" %}
+
+{% block title %}
+    MediPredict | Upload CSV
+{% endblock title %}
+
+{% block style %}
+    :root {
+        --primary: #4a6cf7;
+        --primary-dark: #3a5ce5;
+        --primary-light: #6b8cff;
+        --secondary: #764ba2;
+        --accent: #00d4ff;
+        --dark: #1a1a2e;
+        --light: #f8fafc;
+        --gray: #64748b;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #06b6d4;
+    }
+
+    /* ==================== PAGE HEADER ==================== */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: 10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .page-header p {
+        margin: 0.5rem 0 0;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ==================== UPLOAD CARD ==================== */
+    .upload-card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .upload-card-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .upload-card-header i {
+        font-size: 1.5rem;
+    }
+
+    .upload-card-header h5 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .upload-card-body {
+        padding: 2rem;
+    }
+
+    /* ==================== UPLOAD AREA ==================== */
+    .upload-area {
+        border: 3px dashed #e2e8f0;
+        border-radius: 1.5rem;
+        padding: 3rem 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .upload-area::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.05), rgba(118, 75, 162, 0.05));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .upload-area:hover {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, #f0f4ff 0%, #f5f0ff 100%);
+    }
+
+    .upload-area:hover::before {
+        opacity: 1;
+    }
+
+    .upload-area.drag-over {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, #e8eeff 0%, #f0e8ff 100%);
+        transform: scale(1.02);
+    }
+
+    .upload-area.file-selected {
+        border-color: var(--success);
+        background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+    }
+
+    .upload-area.file-selected .upload-icon-wrapper {
+        background: linear-gradient(135deg, var(--success), #34d399);
+    }
+
+    .upload-area.has-error {
+        border-color: var(--danger);
+        background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+    }
+
+    .upload-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    .upload-area:hover .upload-icon-wrapper {
+        transform: scale(1.1);
+        box-shadow: 0 10px 30px rgba(74, 108, 247, 0.3);
+    }
+
+    .upload-icon-wrapper i {
+        font-size: 3rem;
+        color: white;
+    }
+
+    .upload-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .upload-subtitle {
+        color: var(--gray);
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .upload-or {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .upload-or::before,
+    .upload-or::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #e2e8f0;
+    }
+
+    .upload-or span {
+        color: var(--gray);
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .btn-browse {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-browse:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(74, 108, 247, 0.3);
+    }
+
+    .upload-formats {
+        margin-top: 1.5rem;
+        font-size: 0.8rem;
+        color: var(--gray);
+        position: relative;
+        z-index: 1;
+    }
+
+    .upload-formats span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        background: rgba(74, 108, 247, 0.1);
+        color: var(--primary);
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-weight: 600;
+    }
+
+    /* ==================== FILE INFO ==================== */
+    .file-info-card {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border: 2px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 1.25rem;
+        margin-top: 1.5rem;
+        display: none;
+        animation: slideUp 0.3s ease;
+    }
+
+    .file-info-card.show {
+        display: block;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .file-info-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .file-info-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .file-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--success), #34d399);
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .file-icon i {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .file-details {
+        min-width: 0;
+    }
+
+    .file-name {
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .file-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--gray);
+    }
+
+    .file-meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .file-meta-item i {
+        font-size: 0.875rem;
+        color: var(--primary);
+    }
+
+    .btn-remove-file {
+        width: 40px;
+        height: 40px;
+        background: rgba(239, 68, 68, 0.1);
+        border: none;
+        border-radius: 50%;
+        color: var(--danger);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .btn-remove-file:hover {
+        background: var(--danger);
+        color: white;
+        transform: rotate(90deg);
+    }
+
+    /* ==================== REQUIREMENTS CHECK ==================== */
+    .requirements-check {
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        border: 2px solid rgba(16, 185, 129, 0.2);
+        border-radius: 1rem;
+        padding: 1.25rem;
+        margin-top: 1.5rem;
+        display: none;
+        animation: slideUp 0.3s ease;
+    }
+
+    .requirements-check.show {
+        display: block;
+    }
+
+    .requirements-check.has-errors {
+        background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+        border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .requirements-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        color: var(--success);
+    }
+
+    .requirements-check.has-errors .requirements-header {
+        color: var(--danger);
+    }
+
+    .requirements-header i {
+        font-size: 1.25rem;
+    }
+
+    .requirements-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    @media (max-width: 576px) {
+        .requirements-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .requirement-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+        background: white;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .requirement-item.passed {
+        color: var(--success);
+    }
+
+    .requirement-item.failed {
+        color: var(--danger);
+    }
+
+    .requirement-item i {
+        font-size: 1.1rem;
+    }
+
+    /* ==================== UPLOAD BUTTON ==================== */
+    .btn-upload {
+        width: 100%;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 1rem;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-upload:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .btn-upload:not(:disabled):hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(74, 108, 247, 0.4);
+    }
+
+    .btn-upload .spinner-border {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    /* ==================== REQUIREMENTS SIDEBAR ==================== */
+    .requirements-card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .requirements-card-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .requirements-card-header i {
+        font-size: 1.5rem;
+        color: var(--primary);
+    }
+
+    .requirements-card-header h6 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin: 0;
+    }
+
+    .requirements-card-body {
+        padding: 1.5rem;
+    }
+
+    .requirements-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .requirements-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.9rem;
+        color: var(--dark);
+    }
+
+    .requirements-list li:last-child {
+        border-bottom: none;
+    }
+
+    .requirements-list li i {
+        font-size: 1.25rem;
+        color: var(--success);
+        flex-shrink: 0;
+        margin-top: 0.1rem;
+    }
+
+    .requirements-list li .req-content {
+        flex: 1;
+    }
+
+    .requirements-list li strong {
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .column-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        margin-top: 0.5rem;
+    }
+
+    .column-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.1), rgba(118, 75, 162, 0.1));
+        color: var(--primary);
+        padding: 0.25rem 0.625rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        font-family: 'Courier New', monospace;
+    }
+
+    /* Tips Card */
+    .tips-card {
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(74, 108, 247, 0.1));
+        border: 1px solid rgba(6, 182, 212, 0.2);
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .tips-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        color: var(--info);
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .tips-card-header i {
+        font-size: 1.25rem;
+    }
+
+    .tips-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .tips-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--gray);
+        margin-bottom: 0.5rem;
+    }
+
+    .tips-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .tips-list li i {
+        font-size: 0.875rem;
+        color: var(--info);
+        margin-top: 0.1rem;
+    }
+
+    /* ==================== ERROR MESSAGE ==================== */
+    .error-message {
+        background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+        border: 2px solid rgba(239, 68, 68, 0.2);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin-top: 1rem;
+        display: none;
+        animation: shake 0.5s ease;
+    }
+
+    .error-message.show {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+
+    .error-message i {
+        font-size: 1.5rem;
+        color: var(--danger);
+    }
+
+    .error-message span {
+        color: var(--danger);
+        font-weight: 500;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 992px) {
+        .upload-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+            border-radius: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .upload-card-body {
+            padding: 1.5rem;
+        }
+
+        .upload-area {
+            padding: 2rem 1.5rem;
+        }
+
+        .upload-icon-wrapper {
+            width: 80px;
+            height: 80px;
+        }
+
+        .upload-icon-wrapper i {
+            font-size: 2.5rem;
+        }
+
+        .upload-title {
+            font-size: 1.1rem;
+        }
+
+        .file-info-content {
+            flex-direction: column;
+            align-items: stretch;
+            text-align: center;
+        }
+
+        .file-info-left {
+            flex-direction: column;
+        }
+
+        .file-meta {
+            justify-content: center;
+        }
+
+        .btn-remove-file {
+            align-self: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .main-content .p-3,
+        .main-content .p-md-4 {
+            padding: 1rem !important;
+        }
+
+        .upload-card-body {
+            padding: 1rem;
+        }
+
+        .requirements-card-body {
+            padding: 1rem;
+        }
+
+        .upload-area {
+            padding: 1.5rem 1rem;
+        }
+
+        .upload-icon-wrapper {
+            width: 70px;
+            height: 70px;
+        }
+
+        .upload-icon-wrapper i {
+            font-size: 2rem;
+        }
+
+        .btn-browse {
+            padding: 0.625rem 1.5rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .upload-area.drag-over .upload-icon-wrapper {
+        animation: pulse 0.5s ease infinite;
+    }
+
+{% endblock style %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="col-lg-9 col-xl-10 main-content" id="mainContent">
+    <div class="p-3 p-md-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>
+                <i class="material-icons">cloud_upload</i>
+                Upload CSV Data
+            </h1>
+            <p>Import your pharmacy sales data for analysis and predictions</p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="row">
+            <!-- Left Column: Upload Area -->
+            <div class="col-lg-8 mb-4">
+                <div class="upload-card">
+                    <div class="upload-card-header">
+                        <i class="material-icons">description</i>
+                        <h5>Upload CSV File</h5>
+                    </div>
+                    <div class="upload-card-body">
+                        <!-- Upload Form -->
+                        <form id="csvUploadForm" method="POST" action="{% url 'uploadCsv' %}" enctype="multipart/form-data" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Upload Area -->
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-icon-wrapper" id="uploadIconWrapper">
+                                    <i class="material-icons" id="uploadIcon">cloud_upload</i>
+                                </div>
+                                <h5 class="upload-title" id="uploadTitle">Drag & Drop your CSV file here</h5>
+                                <p class="upload-subtitle" id="uploadSubtitle">or click anywhere to browse</p>
+                                
+                                <div class="upload-or">
+                                    <span>OR</span>
+                                </div>
+                                
+                                <button type="button" class="btn-browse" id="browseBtn">
+                                    <i class="material-icons">folder_open</i>
+                                    Browse Files
+                                </button>
+                                
+                                <div class="upload-formats">
+                                    Supported format: <span><i class="material-icons" style="font-size: 0.875rem;">check</i> CSV</span>
+                                </div>
+                                
+                                <input type="file" id="csvFileInput" name="csvUpload" accept=".csv" class="d-none" required>
+                            </div>
+
+                            <!-- Error Message -->
+                            <div class="error-message" id="errorMessage">
+                                <i class="material-icons">error</i>
+                                <span id="errorText">Please select a valid CSV file.</span>
+                            </div>
+
+                            <!-- File Info Card -->
+                            <div class="file-info-card" id="fileInfo">
+                                <div class="file-info-content">
+                                    <div class="file-info-left">
+                                        <div class="file-icon">
+                                            <i class="material-icons">description</i>
+                                        </div>
+                                        <div class="file-details">
+                                            <div class="file-name" id="fileName">No file selected</div>
+                                            <div class="file-meta">
+                                                <span class="file-meta-item">
+                                                    <i class="material-icons">storage</i>
+                                                    <span id="fileSize">0 KB</span>
+                                                </span>
+                                                <span class="file-meta-item">
+                                                    <i class="material-icons">insert_drive_file</i>
+                                                    <span id="fileType">CSV</span>
+                                                </span>
+                                                <span class="file-meta-item">
+                                                    <i class="material-icons">table_rows</i>
+                                                    <span id="rowCount">0 rows</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-remove-file" id="removeFileBtn" title="Remove file">
+                                        <i class="material-icons">close</i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Requirements Check -->
+                            <div class="requirements-check" id="requirementsCheck">
+                                <div class="requirements-header">
+                                    <i class="material-icons" id="requirementsIcon">check_circle</i>
+                                    <span id="requirementsTitle">File Requirements Status</span>
+                                </div>
+                                <div class="requirements-grid" id="requirementsList">
+                                    <!-- Requirements will be populated by JavaScript -->
+                                </div>
+                            </div>
+
+                            <!-- Upload Button -->
+                            <button type="submit" class="btn-upload" id="uploadBtn" disabled>
+                                <span id="uploadBtnText">
+                                    <i class="material-icons">cloud_upload</i>
+                                    Upload CSV File
+                                </span>
+                                <span id="uploadBtnLoading" class="d-none">
+                                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                                    Uploading...
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Requirements Info -->
+            <div class="col-lg-4 mb-4">
+                <div class="requirements-card">
+                    <div class="requirements-card-header">
+                        <i class="material-icons">checklist</i>
+                        <h6>File Requirements</h6>
+                    </div>
+                    <div class="requirements-card-body">
+                        <ul class="requirements-list">
+                            <li>
+                                <i class="material-icons">check_circle</i>
+                                <div class="req-content">
+                                    <strong>CSV Format</strong>
+                                    File must be in .csv format
+                                </div>
+                            </li>
+                            <li>
+                                <i class="material-icons">check_circle</i>
+                                <div class="req-content">
+                                    <strong>Maximum Size</strong>
+                                    File size must be under 100MB
+                                </div>
+                            </li>
+                            <li>
+                                <i class="material-icons">check_circle</i>
+                                <div class="req-content">
+                                    <strong>UTF-8 Encoding</strong>
+                                    File must use UTF-8 character encoding
+                                </div>
+                            </li>
+                            <li>
+                                <i class="material-icons">check_circle</i>
+                                <div class="req-content">
+                                    <strong>Required Columns</strong>
+                                    All 6 columns must be present:
+                                    <div class="column-tags">
+                                        <span class="column-tag">date</span>
+                                        <span class="column-tag">medicine_name</span>
+                                        <span class="column-tag">category</span>
+                                        <span class="column-tag">brand_name</span>
+                                        <span class="column-tag">usage</span>
+                                        <span class="column-tag">qty</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="material-icons">check_circle</i>
+                                <div class="req-content">
+                                    <strong>Header Row</strong>
+                                    First row must contain column names
+                                </div>
+                            </li>
+                        </ul>
+
+                        <!-- Tips Card -->
+                        <div class="tips-card">
+                            <div class="tips-card-header">
+                                <i class="material-icons">lightbulb</i>
+                                Quick Tips
+                            </div>
+                            <ul class="tips-list">
+                                <li>
+                                    <i class="material-icons">arrow_right</i>
+                                    Column names are case-insensitive
+                                </li>
+                                <li>
+                                    <i class="material-icons">arrow_right</i>
+                                    Date format: YYYY-MM-DD recommended
+                                </li>
+                                <li>
+                                    <i class="material-icons">arrow_right</i>
+                                    Quantity should be numeric values
+                                </li>
+                                <li>
+                                    <i class="material-icons">arrow_right</i>
+                                    Remove any empty rows before upload
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+class CSVUploadValidator {
+    constructor() {
+        this.uploadArea = document.getElementById('uploadArea');
+        this.fileInput = document.getElementById('csvFileInput');
+        this.uploadIcon = document.getElementById('uploadIcon');
+        this.uploadIconWrapper = document.getElementById('uploadIconWrapper');
+        this.uploadTitle = document.getElementById('uploadTitle');
+        this.uploadSubtitle = document.getElementById('uploadSubtitle');
+        this.browseBtn = document.getElementById('browseBtn');
+        this.fileInfo = document.getElementById('fileInfo');
+        this.fileName = document.getElementById('fileName');
+        this.fileSize = document.getElementById('fileSize');
+        this.fileType = document.getElementById('fileType');
+        this.rowCount = document.getElementById('rowCount');
+        this.requirementsCheck = document.getElementById('requirementsCheck');
+        this.requirementsList = document.getElementById('requirementsList');
+        this.requirementsIcon = document.getElementById('requirementsIcon');
+        this.requirementsTitle = document.getElementById('requirementsTitle');
+        this.removeFileBtn = document.getElementById('removeFileBtn');
+        this.errorMessage = document.getElementById('errorMessage');
+        this.errorText = document.getElementById('errorText');
+        this.uploadForm = document.getElementById('csvUploadForm');
+        this.uploadBtn = document.getElementById('uploadBtn');
+        this.uploadBtnText = document.getElementById('uploadBtnText');
+        this.uploadBtnLoading = document.getElementById('uploadBtnLoading');
+        
+        this.selectedFile = null;
+        this.fileContent = null;
+        this.isUploading = false;
+        
+        this.requiredColumns = [
+            'date',
+            'medicine_name', 
+            'category',
+            'brand_name',
+            'usage',
+            'qty'
+        ];
+        
+        this.requirements = [
+            { 
+                id: 'csv-format', 
+                text: 'CSV format (.csv)', 
+                check: (file) => file.name.toLowerCase().endsWith('.csv') 
+            },
+            { 
+                id: 'file-size', 
+                text: 'Size ≤ 100MB', 
+                check: (file) => file.size <= 100 * 1024 * 1024 
+            },
+            { 
+                id: 'not-empty', 
+                text: 'File not empty', 
+                check: (file) => file.size > 0 
+            },
+            { 
+                id: 'has-header', 
+                text: 'Has header row', 
+                check: async (file) => {
+                    const content = await this.readFileContent(file);
+                    const lines = content.split('\n');
+                    return lines.length > 0 && lines[0].trim().length > 0;
+                }
+            },
+            { 
+                id: 'all-columns', 
+                text: 'All required columns', 
+                check: async (file) => {
+                    const content = await this.readFileContent(file);
+                    const lines = content.split('\n');
+                    if (lines.length === 0) return false;
+                    
+                    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+                    const foundColumns = this.requiredColumns.filter(col => 
+                        headers.includes(col.toLowerCase())
+                    );
+                    return foundColumns.length === this.requiredColumns.length;
+                }
+            }
+        ];
+        
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Click on upload area
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target !== this.browseBtn && !this.browseBtn.contains(e.target)) {
+                this.fileInput.click();
+            }
+        });
+
+        // Browse button
+        this.browseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.fileInput.click();
+        });
+
+        // File input change
+        this.fileInput.addEventListener('change', async (e) => {
+            if (e.target.files.length > 0) {
+                await this.handleFileSelection(e.target.files[0]);
+            }
+        });
+
+        // Drag and drop events
+        this.uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.add('drag-over');
+        });
+
+        this.uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('drag-over');
+        });
+
+        this.uploadArea.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('drag-over');
+            
+            if (e.dataTransfer.files.length > 0) {
+                await this.handleFileSelection(e.dataTransfer.files[0]);
+            }
+        });
+
+        // Remove file button
+        this.removeFileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.removeFile();
+        });
+
+        // Form submission
+        this.uploadForm.addEventListener('submit', (e) => {
+            if (!this.selectedFile) {
+                e.preventDefault();
+                this.showError('Please select a CSV file.');
+                return;
+            }
+            this.showLoading(true);
+        });
+    }
+
+    async handleFileSelection(file) {
+        // Reset previous state
+        this.hideError();
+        this.uploadArea.classList.remove('file-selected', 'has-error');
+
+        try {
+            // Read file content for validation
+            this.fileContent = await this.readFileContent(file);
+            
+            // Validate file
+            const validationResults = await this.validateFile(file);
+            const isValid = validationResults.every(r => r.passed);
+            
+            // Update UI based on validation
+            if (isValid) {
+                this.selectedFile = file;
+                this.showFileInfo(file);
+                this.showRequirements(validationResults, true);
+                
+                // Update upload area
+                this.uploadArea.classList.add('file-selected');
+                this.uploadIcon.textContent = 'check_circle';
+                this.uploadTitle.textContent = 'File ready to upload';
+                this.uploadSubtitle.textContent = 'All requirements passed';
+                
+                this.uploadBtn.disabled = false;
+            } else {
+                this.selectedFile = file;
+                this.showFileInfo(file);
+                this.showRequirements(validationResults, false);
+                
+                // Update upload area
+                this.uploadArea.classList.add('has-error');
+                this.uploadIcon.textContent = 'error';
+                this.uploadTitle.textContent = 'File has issues';
+                this.uploadSubtitle.textContent = 'Please check requirements below';
+                
+                this.uploadBtn.disabled = true;
+            }
+        } catch (error) {
+            console.error('Error handling file:', error);
+            this.showError('Error reading file. Please check the file format.');
+            this.uploadBtn.disabled = true;
+        }
+    }
+
+    async validateFile(file) {
+        const results = [];
+        
+        for (const req of this.requirements) {
+            try {
+                const passed = await req.check(file);
+                results.push({
+                    id: req.id,
+                    text: req.text,
+                    passed: passed
+                });
+            } catch (error) {
+                console.error(`Error checking requirement ${req.id}:`, error);
+                results.push({
+                    id: req.id,
+                    text: req.text,
+                    passed: false
+                });
+            }
+        }
+        
+        return results;
+    }
+
+    showFileInfo(file) {
+        this.fileName.textContent = file.name;
+        this.fileSize.textContent = this.formatFileSize(file.size);
+        this.fileType.textContent = file.name.split('.').pop().toUpperCase();
+        
+        // Count rows
+        const lines = this.fileContent.split('\n').filter(line => line.trim().length > 0);
+        const rowCount = Math.max(0, lines.length - 1);
+        this.rowCount.textContent = `${rowCount.toLocaleString()} rows`;
+        
+        this.fileInfo.classList.add('show');
+    }
+
+    showRequirements(results, allPassed) {
+        this.requirementsList.innerHTML = '';
+        
+        results.forEach(req => {
+            const item = document.createElement('div');
+            item.className = `requirement-item ${req.passed ? 'passed' : 'failed'}`;
+            item.innerHTML = `
+                <i class="material-icons">${req.passed ? 'check_circle' : 'cancel'}</i>
+                <span>${req.text}</span>
+            `;
+            this.requirementsList.appendChild(item);
+        });
+        
+        // Update header
+        if (allPassed) {
+            this.requirementsIcon.textContent = 'check_circle';
+            this.requirementsTitle.textContent = 'All requirements passed';
+            this.requirementsCheck.classList.remove('has-errors');
+        } else {
+            this.requirementsIcon.textContent = 'error';
+            this.requirementsTitle.textContent = 'Some requirements failed';
+            this.requirementsCheck.classList.add('has-errors');
+        }
+        
+        this.requirementsCheck.classList.add('show');
+    }
+
+    removeFile() {
+        this.selectedFile = null;
+        this.fileContent = null;
+        this.fileInput.value = '';
+        this.fileInfo.classList.remove('show');
+        this.requirementsCheck.classList.remove('show');
+        this.uploadBtn.disabled = true;
+        this.hideError();
+        
+        // Reset upload area
+        this.uploadArea.classList.remove('file-selected', 'has-error');
+        this.uploadIcon.textContent = 'cloud_upload';
+        this.uploadTitle.textContent = 'Drag & Drop your CSV file here';
+        this.uploadSubtitle.textContent = 'or click anywhere to browse';
+    }
+
+    async readFileContent(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = () => reject(new Error('Error reading file'));
+            reader.readAsText(file);
+        });
+    }
+
+    showLoading(isLoading) {
+        if (isLoading) {
+            this.uploadBtnText.classList.add('d-none');
+            this.uploadBtnLoading.classList.remove('d-none');
+            this.uploadBtn.disabled = true;
+        } else {
+            this.uploadBtnText.classList.remove('d-none');
+            this.uploadBtnLoading.classList.add('d-none');
+        }
+    }
+
+    showError(message) {
+        this.errorText.textContent = message;
+        this.errorMessage.classList.add('show');
+        this.uploadArea.classList.add('has-error');
+    }
+
+    hideError() {
+        this.errorMessage.classList.remove('show');
+    }
+
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+}
+
+// Initialize validator when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new CSVUploadValidator();
+});
+{% endblock script %}

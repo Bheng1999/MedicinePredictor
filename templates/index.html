@@ -1,0 +1,1792 @@
+{% extends "base.html" %}
+
+{% block title %}
+    MediPredict | Intelligent Pharmacy Inventory Management
+{% endblock title %}
+
+{% block style %}
+<style>
+    :root {
+        --primary: #4a6cf7;
+        --primary-dark: #3a5ce5;
+        --primary-light: #6b8cff;
+        --secondary: #764ba2;
+        --accent: #00d4ff;
+        --dark: #1a1a2e;
+        --light: #f8fafc;
+        --gray: #64748b;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 4px;
+    }
+
+    /* ==================== NAVBAR ==================== */
+    .navbar-custom {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        padding: 0.75rem 0;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-custom.scrolled {
+        padding: 0.5rem 0;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .navbar-brand {
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--primary) !important;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .navbar-brand i {
+        font-size: 2rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .nav-link {
+        color: var(--dark) !important;
+        font-weight: 500;
+        padding: 0.5rem 1rem !important;
+        position: relative;
+        transition: color 0.3s ease;
+    }
+
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after {
+        width: 80%;
+    }
+
+    .nav-link:hover {
+        color: var(--primary) !important;
+    }
+
+    .btn-nav {
+        padding: 0.5rem 1.25rem;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-nav-outline {
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        background: transparent;
+    }
+
+    .btn-nav-outline:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(74, 108, 247, 0.3);
+    }
+
+    .btn-nav-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+    }
+
+    .btn-nav-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(74, 108, 247, 0.4);
+        color: white;
+    }
+
+    /* ==================== HERO SECTION ==================== */
+    .hero-section {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        padding: 6rem 0 4rem;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 80%;
+        height: 150%;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.1), rgba(118, 75, 162, 0.1));
+        border-radius: 50%;
+        animation: float 15s ease-in-out infinite;
+    }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(74, 108, 247, 0.08));
+        border-radius: 50%;
+        animation: float 12s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-30px) rotate(5deg); }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        color: var(--dark);
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-title span {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-description {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: var(--gray);
+        margin-bottom: 2rem;
+        max-width: 540px;
+        animation: fadeInUp 0.8s ease 0.4s both;
+    }
+
+    .hero-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        animation: fadeInUp 0.8s ease 0.6s both;
+    }
+
+    .btn-hero {
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-hero-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        box-shadow: 0 10px 30px rgba(74, 108, 247, 0.3);
+    }
+
+    .btn-hero-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(74, 108, 247, 0.4);
+        color: white;
+    }
+
+    .btn-hero-outline {
+        background: white;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+    }
+
+    .btn-hero-outline:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(74, 108, 247, 0.3);
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 3rem;
+        animation: fadeInUp 0.8s ease 0.8s both;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--gray);
+    }
+
+    .hero-image {
+        position: relative;
+        z-index: 2;
+        animation: fadeInRight 1s ease 0.5s both;
+    }
+
+    .hero-image-wrapper {
+        position: relative;
+        padding: 2rem;
+    }
+
+    .hero-card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    }
+
+    .hero-card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-card-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-card-icon i {
+        font-size: 2rem;
+        color: white;
+    }
+
+    .hero-card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark);
+    }
+
+    .hero-card-subtitle {
+        font-size: 0.875rem;
+        color: var(--gray);
+    }
+
+    .hero-chart-placeholder {
+        height: 200px;
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        border-radius: 1rem;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        padding: 1rem;
+        gap: 0.5rem;
+    }
+
+    .chart-bar {
+        width: 100%;
+        max-width: 40px;
+        background: linear-gradient(to top, var(--primary), var(--primary-light));
+        border-radius: 0.5rem 0.5rem 0 0;
+        animation: growBar 1s ease forwards;
+    }
+
+    @keyframes growBar {
+        from { height: 0; }
+    }
+
+    .floating-card {
+        position: absolute;
+        background: white;
+        padding: 1rem 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        animation: floatCard 3s ease-in-out infinite;
+    }
+
+    .floating-card-1 {
+        top: 10%;
+        right: -10%;
+        animation-delay: 0s;
+    }
+
+    .floating-card-2 {
+        bottom: 15%;
+        left: -5%;
+        animation-delay: 1.5s;
+    }
+
+    @keyframes floatCard {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .floating-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .floating-icon.success {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+    }
+
+    .floating-icon.warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* ==================== SECTIONS COMMON ==================== */
+    section {
+        padding: 5rem 0;
+    }
+
+    .section-header {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 4rem;
+    }
+
+    .section-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.1), rgba(118, 75, 162, 0.1));
+        color: var(--primary);
+        padding: 0.5rem 1.25rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .section-title {
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 1rem;
+    }
+
+    .section-description {
+        font-size: 1.1rem;
+        color: var(--gray);
+    }
+
+    /* ==================== OVERVIEW SECTION ==================== */
+    .overview-section {
+        background: white;
+    }
+
+    .overview-card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        height: 100%;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .overview-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .overview-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-color: transparent;
+    }
+
+    .overview-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .overview-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .overview-icon i {
+        font-size: 2rem;
+        color: white;
+    }
+
+    .overview-card h4 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 1rem;
+    }
+
+    .overview-card p {
+        color: var(--gray);
+        line-height: 1.7;
+    }
+
+    /* ==================== FEATURES SECTION ==================== */
+    .features-section {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2.5rem 2rem;
+        height: 100%;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(74, 108, 247, 0.15);
+    }
+
+    .feature-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.1), rgba(118, 75, 162, 0.1));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon-wrapper {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        transform: scale(1.1);
+    }
+
+    .feature-icon-wrapper i {
+        font-size: 2.5rem;
+        color: var(--primary);
+        transition: color 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon-wrapper i {
+        color: white;
+    }
+
+    .feature-card h4 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+        color: var(--gray);
+        line-height: 1.7;
+    }
+
+    /* ==================== TEAM SECTION ==================== */
+    .team-section {
+        background: linear-gradient(135deg, var(--dark) 0%, #16213e 100%);
+        color: white;
+    }
+
+    .team-section .section-badge {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .team-section .section-title {
+        color: white;
+    }
+
+    .team-section .section-description {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .team-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1.5rem;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .team-card:hover {
+        transform: translateY(-10px);
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .team-avatar {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        position: relative;
+    }
+
+    .team-avatar::before {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+        z-index: -1;
+        opacity: 0.5;
+    }
+
+    .team-avatar i {
+        font-size: 3rem;
+        color: white;
+    }
+
+    .team-card h4 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .team-card p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+
+    .team-role {
+        display: inline-block;
+        background: rgba(74, 108, 247, 0.2);
+        color: var(--accent);
+        padding: 0.25rem 1rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    /* ==================== CONTACT SECTION ==================== */
+    .contact-section {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    .contact-card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 3rem;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-info h5 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .contact-info p {
+        color: var(--gray);
+        line-height: 1.8;
+    }
+
+    .contact-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    /* ==================== FOOTER ==================== */
+    .footer {
+        background: var(--dark);
+        color: white;
+        padding: 3rem 0 1.5rem;
+    }
+
+    .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .footer-brand i {
+        color: var(--accent);
+    }
+
+    .footer-description {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 1.5rem;
+    }
+
+    .footer-links h6 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: white;
+    }
+
+    .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        display: block;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .footer-links a:hover {
+        color: var(--accent);
+        transform: translateX(5px);
+    }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1.5rem;
+        margin-top: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .footer-copyright {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+
+    .footer-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .footer-buttons .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    /* ==================== MODALS ==================== */
+    .modal-content {
+        border: none;
+        border-radius: 1.5rem;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 1.5rem 2rem;
+    }
+
+    .modal-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+    }
+
+    .modal-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.1), rgba(118, 75, 162, 0.1));
+        border: 2px solid #e2e8f0;
+        border-right: none;
+        color: var(--primary);
+    }
+
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-left: none;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+    }
+
+    .input-group:focus-within .input-group-text {
+        border-color: var(--primary);
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 0.875rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(74, 108, 247, 0.3);
+        color: white;
+    }
+
+    /* Validation Styles */
+    .validation-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+    }
+
+    .validation-icon i {
+        display: none;
+    }
+
+    .password-strength {
+        height: 5px;
+        margin-top: 8px;
+        border-radius: 3px;
+        transition: all 0.3s ease;
+        background: #e2e8f0;
+    }
+
+    .password-feedback {
+        font-size: 0.8rem;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+
+    .strength-weak { background: linear-gradient(90deg, var(--danger), var(--danger)); width: 25%; }
+    .strength-fair { background: linear-gradient(90deg, var(--warning), var(--warning)); width: 50%; }
+    .strength-good { background: linear-gradient(90deg, #84cc16, #84cc16); width: 75%; }
+    .strength-strong { background: linear-gradient(90deg, var(--success), var(--success)); width: 100%; }
+
+    .form-control.is-valid {
+        border-color: var(--success);
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--danger);
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 1200px) {
+        .hero-section {
+            padding: 5rem 0 3rem;
+        }
+    }
+
+    @media (max-width: 991px) {
+        .navbar-collapse {
+            background: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-top: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-section {
+            min-height: auto;
+            padding: 7rem 0 4rem;
+        }
+
+        .hero-image {
+            margin-top: 3rem;
+        }
+
+        .hero-stats {
+            justify-content: center;
+        }
+
+        .floating-card {
+            display: none;
+        }
+    }
+
+    @media (max-width: 767px) {
+        section {
+            padding: 3rem 0;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+        }
+
+        .btn-hero {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .hero-stats {
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            flex: 1 1 40%;
+        }
+
+        .contact-card {
+            padding: 1.5rem;
+        }
+
+        .contact-buttons {
+            flex-direction: column;
+        }
+
+        .contact-buttons .btn {
+            width: 100%;
+        }
+
+        .footer-bottom {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .navbar-brand {
+            font-size: 1.25rem;
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+        }
+
+        .hero-card {
+            padding: 1.5rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .section-header {
+            margin-bottom: 2.5rem;
+        }
+    }
+</style>
+{% endblock style %}
+
+{% block content %}
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="material-icons">local_pharmacy</i>
+            MediPredict
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto me-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="#overview">Overview</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#features">Features</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#team">Team</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contact</a>
+                </li>
+            </ul>
+            <div class="d-flex gap-2 mt-3 mt-lg-0">
+                <button class="btn btn-nav btn-nav-outline" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    <i class="material-icons align-middle" style="font-size: 1.1rem;">login</i> Login
+                </button>
+                <button class="btn btn-nav btn-nav-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
+                    <i class="material-icons align-middle" style="font-size: 1.1rem;">person_add</i> Register
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                
+                <h1 class="hero-title">
+                    <span>Medicine Demand</span> Prediction System
+                </h1>
+                <p class="hero-description">
+                    Leverage advanced machine learning to optimize pharmacy inventory. Predict demand, reduce waste, and ensure medicines are always available when patients need them.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn btn-hero btn-hero-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
+                        <i class="material-icons">rocket_launch</i>
+                        Get Started Free
+                    </button>
+                    <a href="#features" class="btn btn-hero btn-hero-outline">
+                        <i class="material-icons">play_circle</i>
+                        Learn More
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 hero-image">
+                <div class="hero-image-wrapper">
+                    <div class="hero-card">
+                        <div class="hero-card-header">
+                            <div class="hero-card-icon">
+                                <i class="material-icons">analytics</i>
+                            </div>
+                            <div>
+                                <div class="hero-card-title">Demand Analytics</div>
+                                <div class="hero-card-subtitle">Medicine demand predictions</div>
+                            </div>
+                        </div>
+                        <div class="hero-chart-placeholder">
+                            <div class="chart-bar" style="height: 60%;"></div>
+                            <div class="chart-bar" style="height: 80%;"></div>
+                            <div class="chart-bar" style="height: 45%;"></div>
+                            <div class="chart-bar" style="height: 90%;"></div>
+                            <div class="chart-bar" style="height: 70%;"></div>
+                            <div class="chart-bar" style="height: 85%;"></div>
+                            <div class="chart-bar" style="height: 55%;"></div>
+                        </div>
+                    </div>
+                    <div class="floating-card floating-card-1">
+                        <div class="floating-icon success">
+                            <i class="material-icons">trending_up</i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--dark);">+24%</div>
+                            <div style="font-size: 0.75rem; color: var(--gray);">Efficiency</div>
+                        </div>
+                    </div>
+                    <div class="floating-card floating-card-2">
+                        <div class="floating-icon warning">
+                            <i class="material-icons">inventory_2</i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--dark);">Optimized</div>
+                            <div style="font-size: 0.75rem; color: var(--gray);">Stock Levels</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Overview Section -->
+<section id="overview" class="overview-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">About The Project</div>
+            <h2 class="section-title">Why MediPredict?</h2>
+            <p class="section-description">
+                Revolutionizing pharmacy inventory management with cutting-edge predictive analytics
+            </p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="overview-card">
+                    <div class="overview-icon">
+                        <i class="material-icons">report_problem</i>
+                    </div>
+                    <h4>The Problem</h4>
+                    <p>
+                        Most pharmacies lack intelligent systems to classify high-demand medicines, leading to costly operational issues including stockouts, overstocking, and expired inventory. Existing systems don't leverage advanced ML models to categorize medicines into clear demand levels.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="overview-card">
+                    <div class="overview-icon">
+                        <i class="material-icons">lightbulb</i>
+                    </div>
+                    <h4>Our Solution</h4>
+                    <p>
+                        MediPredict implements a secure, easy-to-use prediction platform using XGBoost classification to analyze historical sales data. Our system categorizes medicines into high, medium, or low demand levels, enabling pharmacies to optimize inventory and improve patient care.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="features-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">Capabilities</div>
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-description">
+                Everything you need to transform your pharmacy inventory management
+            </p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="material-icons">cloud_upload</i>
+                    </div>
+                    <h4>CSV Data Upload</h4>
+                    <p>
+                        Easily upload historical pharmacy sales data in CSV format for seamless processing and comprehensive analysis.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="material-icons">model_training</i>
+                    </div>
+                    <h4>XGBoost Classification</h4>
+                    <p>
+                        Advanced machine learning algorithm that accurately classifies medicines into distinct demand levels with high precision.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="material-icons">dashboard</i>
+                    </div>
+                    <h4>Interactive Dashboard</h4>
+                    <p>
+                        User-friendly interface displaying prediction results with visual charts, graphs, and detailed reports.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="material-icons">search</i>
+                    </div>
+                    <h4>Medicine Search</h4>
+                    <p>
+                        Quickly find medicines by usage, symptoms, or category with our intelligent search functionality.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="material-icons">insights</i>
+                    </div>
+                    <h4>Trend Analysis</h4>
+                    <p>
+                        Visualize monthly usage patterns and identify seasonal trends in medicine demand over time.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="material-icons">security</i>
+                    </div>
+                    <h4>Secure Access</h4>
+                    <p>
+                        Role-based authentication ensures secure access to sensitive pharmacy data and predictions.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <button class="btn btn-hero btn-hero-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
+                <i class="material-icons">person_add</i>
+                Start Using These Features
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section id="team" class="team-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">Our Team</div>
+            <h2 class="section-title">Meet The Developers</h2>
+            <p class="section-description">
+                BS Information Technology Students at Eastern Visayas State University
+            </p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="material-icons">person</i>
+                    </div>
+                    <h4>Josua Sapuez</h4>
+                    <p>BS Information Technology</p>
+                    <span class="team-role">Developer & Researcher</span>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="material-icons">person</i>
+                    </div>
+                    <h4>Oliver P. Pomarejos</h4>
+                    <p>BS Information Technology</p>
+                    <span class="team-role">Developer & Researcher</span>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="material-icons">person</i>
+                    </div>
+                    <h4>Rona Mae S. Amistoso</h4>
+                    <p>BS Information Technology</p>
+                    <span class="team-role">Developer & Researcher</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">Get In Touch</div>
+            <h2 class="section-title">Contact Us</h2>
+            <p class="section-description">
+                Eastern Visayas State University, Tacloban City
+            </p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="contact-card">
+                    <div class="row">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <div class="contact-info">
+                                <h5><i class="material-icons align-middle me-2">school</i>Institution</h5>
+                                <p>
+                                    Eastern Visayas State University<br>
+                                    College of Engineering<br>
+                                    Department of Information Technology<br>
+                                    Tacloban City, Leyte
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="contact-info">
+                                <h5><i class="material-icons align-middle me-2">description</i>Project Details</h5>
+                                <p>
+                                    Capstone Project for<br>
+                                    BS Information Technology<br>
+                                    Academic Year 2024-2025<br>
+                                    Presented: August 2025
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-buttons">
+                        <button class="btn btn-hero btn-hero-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i class="material-icons">login</i>
+                            Login to System
+                        </button>
+                        <button class="btn btn-hero btn-hero-outline" data-bs-toggle="modal" data-bs-target="#registerModal">
+                            <i class="material-icons">person_add</i>
+                            Create Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="footer-brand">
+                    <i class="material-icons">local_pharmacy</i>
+                    MediPredict
+                </div>
+                <p class="footer-description">
+                    Data-Driven Prediction of High Demand Medicines Using Predictive Analysis for Better Pharmacy Management.
+                </p>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <div class="footer-links">
+                    <h6>Quick Links</h6>
+                    <a href="#overview">Overview</a>
+                    <a href="#features">Features</a>
+                    <a href="#team">Team</a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <div class="footer-links">
+                    <h6>Resources</h6>
+                    <a href="#contact">Contact</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <div class="footer-links">
+                    <h6>Get Started</h6>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                        Ready to optimize your pharmacy inventory? Create an account today.
+                    </p>
+                    <button class="btn btn-nav btn-nav-primary mt-2" data-bs-toggle="modal" data-bs-target="#registerModal">
+                        <i class="material-icons align-middle" style="font-size: 1rem;">rocket_launch</i> Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                &copy; 2025 Eastern Visayas State University. All rights reserved.
+            </div>
+            <div class="footer-buttons">
+                <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">
+                    <i class="material-icons">login</i> Welcome Back
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm" method="POST" action="{% url 'login' %}" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="loginUsername" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="material-icons">person</i>
+                            </span>
+                            <input type="text" class="form-control" id="loginUsername" name="username" placeholder="Enter your username" required minlength="3" maxlength="20">
+                        </div>
+                        <div class="invalid-feedback" id="loginUsernameFeedback">
+                            Username must be between 3 and 20 characters.
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="loginPassword" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="material-icons">lock</i>
+                            </span>
+                            <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Enter your password" required minlength="6">
+                        </div>
+                        <div class="invalid-feedback" id="loginPasswordFeedback">
+                            Password must be at least 6 characters long.
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-submit">
+                        <i class="material-icons align-middle me-1">login</i> Login
+                    </button>
+                </form>
+                <hr class="my-4">
+                <div class="text-center">
+                    <p class="mb-0" style="color: var(--gray);">Don't have an account? 
+                        <a href="#" class="text-decoration-none fw-semibold" style="color: var(--primary);" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">
+                    <i class="material-icons">person_add</i> Create Account
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm" method="POST" action="{% url 'register' %}" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="material-icons">person</i>
+                                </span>
+                                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First name" required minlength="2">
+                            </div>
+                            <div class="invalid-feedback" id="firstNameFeedback">
+                                First name must be at least 2 characters.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="material-icons">person</i>
+                                </span>
+                                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last name" required minlength="2">
+                            </div>
+                            <div class="invalid-feedback" id="lastNameFeedback">
+                                Last name must be at least 2 characters.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerUsername" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="material-icons">alternate_email</i>
+                            </span>
+                            <input type="text" class="form-control" id="registerUsername" name="username" placeholder="Choose a username" required minlength="3" maxlength="20">
+                        </div>
+                        <div class="invalid-feedback" id="registerUsernameFeedback">
+                            Username must be 3-20 characters (letters, numbers, underscore).
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="material-icons">email</i>
+                            </span>
+                            <input type="email" class="form-control" id="registerEmail" name="email" placeholder="name@example.com" required>
+                        </div>
+                        <div class="invalid-feedback" id="registerEmailFeedback">
+                            Please provide a valid email address.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="material-icons">lock</i>
+                            </span>
+                            <input type="password" class="form-control" id="registerPassword" name="password" placeholder="Create a strong password" required minlength="8">
+                        </div>
+                        <div class="password-strength" id="passwordStrength"></div>
+                        <div class="password-feedback" id="passwordFeedback"></div>
+                        <div class="invalid-feedback" id="registerPasswordFeedback">
+                            Password needs 8+ chars with uppercase, lowercase, and numbers.
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="material-icons">lock_outline</i>
+                            </span>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                        </div>
+                        <div class="invalid-feedback" id="confirmPasswordFeedback">
+                            Passwords do not match.
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-submit">
+                        <i class="material-icons align-middle me-1">person_add</i> Create Account
+                    </button>
+                </form>
+                <hr class="my-4">
+                <div class="text-center">
+                    <p class="mb-0" style="color: var(--gray);">Already have an account? 
+                        <a href="#" class="text-decoration-none fw-semibold" style="color: var(--primary);" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Navbar scroll effect
+    const navbar = document.querySelector('.navbar-custom');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const offset = 80;
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Validation functions
+    function validateField(field, validationRules) {
+        const value = field.value.trim();
+        const isValid = validationRules.every(rule => rule.condition(value));
+        
+        if (isValid) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        } else {
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+        }
+        
+        return isValid;
+    }
+
+    function validateUsername(username) {
+        return validateField(username, [
+            { condition: (val) => val.length >= 3 && val.length <= 20 },
+            { condition: (val) => /^[a-zA-Z0-9_]+$/.test(val) }
+        ]);
+    }
+
+    function validateName(name) {
+        return validateField(name, [
+            { condition: (val) => val.length >= 2 },
+            { condition: (val) => /^[a-zA-Z\s]+$/.test(val) }
+        ]);
+    }
+
+    function validateEmail(email) {
+        return validateField(email, [
+            { condition: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) }
+        ]);
+    }
+
+    function validatePassword(password) {
+        const hasMinLength = password.value.length >= 8;
+        const hasUpperCase = /[A-Z]/.test(password.value);
+        const hasLowerCase = /[a-z]/.test(password.value);
+        const hasNumbers = /\d/.test(password.value);
+        
+        const strengthBar = document.getElementById('passwordStrength');
+        const feedback = document.getElementById('passwordFeedback');
+        
+        let strength = 0;
+        let message = "";
+        let color = "";
+        
+        if (hasMinLength) strength++;
+        if (hasUpperCase) strength++;
+        if (hasLowerCase) strength++;
+        if (hasNumbers) strength++;
+        
+        strengthBar.className = 'password-strength';
+        if (strength === 0) {
+            message = "";
+        } else if (strength === 1) {
+            strengthBar.classList.add('strength-weak');
+            message = "Weak password";
+            color = "var(--danger)";
+        } else if (strength === 2) {
+            strengthBar.classList.add('strength-fair');
+            message = "Fair password";
+            color = "var(--warning)";
+        } else if (strength === 3) {
+            strengthBar.classList.add('strength-good');
+            message = "Good password";
+            color = "#84cc16";
+        } else {
+            strengthBar.classList.add('strength-strong');
+            message = "Strong password";
+            color = "var(--success)";
+        }
+        
+        feedback.textContent = message;
+        feedback.style.color = color;
+        
+        const isValid = hasMinLength && hasUpperCase && hasLowerCase && hasNumbers;
+        
+        if (isValid) {
+            password.classList.remove('is-invalid');
+            password.classList.add('is-valid');
+        } else {
+            password.classList.remove('is-valid');
+            password.classList.add('is-invalid');
+        }
+        
+        return isValid;
+    }
+
+    function validateConfirmPassword(confirmPassword, password) {
+        const isValid = confirmPassword.value === password.value && confirmPassword.value.length > 0;
+        
+        if (isValid) {
+            confirmPassword.classList.remove('is-invalid');
+            confirmPassword.classList.add('is-valid');
+        } else {
+            confirmPassword.classList.remove('is-valid');
+            confirmPassword.classList.add('is-invalid');
+        }
+        
+        return isValid;
+    }
+
+    // Login form validation
+    const loginUsername = document.getElementById('loginUsername');
+    const loginPassword = document.getElementById('loginPassword');
+    
+    if (loginUsername) {
+        loginUsername.addEventListener('input', () => validateUsername(loginUsername));
+    }
+    
+    if (loginPassword) {
+        loginPassword.addEventListener('input', function() {
+            validateField(loginPassword, [
+                { condition: (val) => val.length >= 8 }
+            ]);
+        });
+    }
+    
+    // Register form validation
+    const firstName = document.getElementById('firstName');
+    const lastName = document.getElementById('lastName');
+    const registerUsername = document.getElementById('registerUsername');
+    const registerEmail = document.getElementById('registerEmail');
+    const registerPassword = document.getElementById('registerPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    if (firstName) firstName.addEventListener('input', () => validateName(firstName));
+    if (lastName) lastName.addEventListener('input', () => validateName(lastName));
+    if (registerUsername) registerUsername.addEventListener('input', () => validateUsername(registerUsername));
+    if (registerEmail) registerEmail.addEventListener('input', () => validateEmail(registerEmail));
+    
+    if (registerPassword) {
+        registerPassword.addEventListener('input', function() {
+            validatePassword(registerPassword);
+            if (confirmPassword.value) {
+                validateConfirmPassword(confirmPassword, registerPassword);
+            }
+        });
+    }
+    
+    if (confirmPassword) {
+        confirmPassword.addEventListener('input', () => validateConfirmPassword(confirmPassword, registerPassword));
+    }
+    
+    // Form submissions
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const isUsernameValid = validateUsername(loginUsername);
+            const isPasswordValid = validateField(loginPassword, [
+                { condition: (val) => val.length >= 8 }
+            ]);
+            
+            if (isUsernameValid && isPasswordValid) {
+                loginForm.submit();
+            }
+            
+            loginForm.classList.add('was-validated');
+        });
+    }
+    
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const isFirstNameValid = validateName(firstName);
+            const isLastNameValid = validateName(lastName);
+            const isUsernameValid = validateUsername(registerUsername);
+            const isEmailValid = validateEmail(registerEmail);
+            const isPasswordValid = validatePassword(registerPassword);
+            const isConfirmPasswordValid = validateConfirmPassword(confirmPassword, registerPassword);
+            
+            if (isFirstNameValid && isLastNameValid && isUsernameValid && 
+                isEmailValid && isPasswordValid && isConfirmPasswordValid) {
+                registerForm.submit();
+            }
+            
+            registerForm.classList.add('was-validated');
+        });
+    }
+
+    // Toast notifications
+    const toastElList = document.querySelectorAll('.toast');
+    toastElList.forEach(toastEl => {
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.overview-card, .feature-card, .team-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.6s ease';
+        observer.observe(el);
+    });
+});
+</script>
+{% endblock script %}

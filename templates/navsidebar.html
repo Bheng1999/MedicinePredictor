@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link {
+            color: #333;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin: 0.125rem 0.5rem;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+        }
+        .sidebar .nav-link.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .sidebar .nav-link .material-icons {
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        .navbar-brand .material-icons {
+            margin-right: 0.5rem;
+        }
+        .user-name {
+            color: white;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 56px;
+                left: -100%;
+                width: 280px;
+                z-index: 1000;
+                height: calc(100vh - 56px);
+            }
+            .sidebar.show {
+                left: 0;
+            }
+            .sidebar-backdrop {
+                display: none;
+                position: fixed;
+                top: 56px;
+                left: 0;
+                width: 100%;
+                height: calc(100vh - 56px);
+                background-color: rgba(0,0,0,0.5);
+                z-index: 999;
+            }
+            .sidebar-backdrop.show {
+                display: block;
+            }
+        }
+        .main-content {
+            transition: all 0.3s;
+        }
+        .search-box {
+            max-width: 300px;
+        }
+
+        {% block style %}{% endblock style %}
+
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+            <!-- Sidebar Toggle Button -->
+            <button class="navbar-toggler me-2" type="button" id="sidebarToggle">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Brand -->
+            <a class="navbar-brand" href="#">
+                <i class="material-icons">local_hospital</i>
+                MediPredict
+            </a>
+
+            
+            
+            <!-- User Name Only -->
+            <div class="navbar-nav">
+                <span class="user-name">{{user.get_full_name}}</span>
+            </div>
+        </div>
+    </nav>
+    <!-- Sidebar Backdrop (Mobile Only) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Main Container -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-xl-2 sidebar" id="sidebar">
+                <div class="d-flex flex-column flex-shrink-0 p-3">
+                    
+
+                    <!-- Navigation Menu -->
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item">
+                            <a href="{% url "dashboard" %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                                <i class="material-icons">dashboard</i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url "uploadPage" %}" class="nav-link {% if request.resolver_match.url_name == 'uploadPage' %}active{% endif %}">
+                                <i class="material-icons">cloud_upload</i>
+                                Upload CSV
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url "trainPage" %}" class="nav-link {% if request.resolver_match.url_name == 'trainPage' %}active{% endif %}">
+                                <i class="material-icons">model_training</i>
+                                Train Model
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url "predictPage" %}" class="nav-link {% if request.resolver_match.url_name == 'predictPage' %}active{% endif %}">
+                                <i class="material-icons">psychology</i>
+                                Prediction
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url "resultPage" %}" class="nav-link {% if request.resolver_match.url_name == 'resultPage' %}active{% endif %}">
+                                <i class="material-icons">bar_chart</i>
+                                Results
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url "searchPage" %}" class="nav-link {% if request.resolver_match.url_name == 'searchPage' %}active{% endif %}">
+                                <i class="material-icons">trending_up</i>
+                                Search Med
+                            </a>
+                        </li>
+                    </ul>
+
+                    <hr>
+
+                    <!-- Bottom Menu -->
+                    <ul class="nav nav-pills flex-column">
+                        <li class="nav-item">
+                            <a href="{% url "profilePage" %}" class="nav-link {% if request.resolver_match.url_name == 'profilePage' %}active{% endif %}">
+                                <i class="material-icons">account_circle</i>
+                                Profile
+                            </a>
+                        </li>
+                        {% if user.is_superuser or user.role == 'admin' %}
+                            <li class="nav-item">
+                                <a href="{% url 'manageUsersPage' %}" class="nav-link {% if request.resolver_match.url_name == 'manageUsersPage' %}active{% endif %}">
+                                    <i class="material-icons">group</i>
+                                    Manage Users
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a href="#" class="nav-link text-danger" id="logoutBtn">
+                                <i class="material-icons">logout</i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+            {% block content %}{% endblock content %}
+
+            
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+
+        {% block script %}
+        {% endblock script %}
+        {% if messages %}
+            {% for message in messages%}
+                Swal.fire({
+                    icon: "{{message.tags}}",
+                    text: "{{message}}",
+                });
+            {% endfor %}
+        {% endif %}
+
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    Swal.fire({
+        title: 'Confirm Logout',
+        text: 'Are you sure you want to logout?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="material-icons align-middle" style="font-size: 18px;">logout</i> Logout',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Create and submit the logout form
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{% url "logout" %}';
+            
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = '{{ csrf_token }}';
+            
+            form.appendChild(csrfInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+});
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                sidebarBackdrop.classList.toggle('show');
+            }
+
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            sidebarBackdrop.addEventListener('click', toggleSidebar);
+
+            // Close sidebar when clicking on a link (mobile)
+            sidebar.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 768) {
+                        toggleSidebar();
+                    }
+                });
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.remove('show');
+                    sidebarBackdrop.classList.remove('show');
+                }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const toastElList = document.querySelectorAll('.toast');
+            const toastList = [...toastElList].map(toastEl => {
+                const toast = new bootstrap.Toast(toastEl, { delay: 2000 });
+                toast.show();
+                return toast;
+            });
+        });
+    </script>
+</body>
+</html>

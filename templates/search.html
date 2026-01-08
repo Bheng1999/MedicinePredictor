@@ -1,0 +1,1369 @@
+{% extends "navsidebar.html" %}
+
+{% block title %}
+    MediPredict | Medicine Search
+{% endblock title %}
+
+{% block style %}
+/* Search page specific styles */
+.search-hero {
+    background: white;
+    border-radius: 1rem;
+    padding: 3rem 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.search-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+.search-hero p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+/* Search container */
+.search-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.search-input-group {
+    position: relative;
+}
+
+.search-input {
+    padding: 1.25rem 1.5rem 1.25rem 4rem;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    border: 2px solid #e9ecef;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    box-shadow: 0 10px 30px rgba(74, 108, 247, 0.15);
+    transform: translateY(-2px);
+    border-color: #4a6cf7;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 1.5rem;
+    z-index: 2;
+}
+
+.search-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    background: #4a6cf7;
+    border: none;
+}
+
+.search-btn:hover {
+    background: #3a5ce5;
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* Results section */
+.results-container {
+    margin-top: 2rem;
+}
+
+/* Fixed Grid Design */
+.results-grid-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 1400px) {
+    .results-grid-container {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .results-grid-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .results-grid-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .results-grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .results-grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.medicine-card {
+    border: none;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+    position: relative;
+}
+
+.medicine-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+}
+
+.medicine-header {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    flex-shrink: 0;
+}
+
+.medicine-brand {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: 2.4em;
+}
+
+.medicine-name {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: 2.6em;
+}
+
+.medicine-category {
+    display: inline-block;
+    background: #4a6cf7;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.medicine-body {
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.medicine-usage {
+    font-size: 0.85rem;
+    color: #6c757d;
+    line-height: 1.4;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.medicine-usage strong {
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.usage-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+/* Chart section */
+.chart-section {
+    margin-top: 1rem;
+}
+
+.chart-section h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+.chart-container {
+    position: relative;
+    height: 200px;
+    margin-bottom: 1rem;
+}
+
+/* No results state */
+.no-results {
+    text-align: center;
+    padding: 4rem 1rem;
+    grid-column: 1 / -1;
+}
+
+.no-results-icon {
+    font-size: 4rem;
+    color: #dee2e6;
+    margin-bottom: 1.5rem;
+}
+
+/* Animation for search results */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.medicine-card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-hero {
+        padding: 2rem 1rem;
+        margin: 0 -1rem 2rem;
+        border-radius: 0;
+    }
+    
+    .search-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .search-input {
+        padding: 1rem 1.25rem 1rem 3.5rem;
+        font-size: 1rem;
+    }
+    
+    .search-icon {
+        left: 1.25rem;
+        font-size: 1.25rem;
+    }
+    
+    .search-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .chart-container {
+        height: 180px;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-hero h1 {
+        font-size: 1.75rem;
+    }
+}
+
+/* Search results header */
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.results-count {
+    font-size: 1.1rem;
+    color: #495057;
+    font-weight: 600;
+}
+
+.results-count span {
+    color: #4a6cf7;
+}
+
+/* Empty search state */
+.initial-state {
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.initial-icon {
+    font-size: 4rem;
+    color: #c3cfe2;
+    margin-bottom: 1.5rem;
+}
+
+.initial-state h4 {
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.initial-state p {
+    color: #adb5bd;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Medicine modal improvements */
+.modal-medicine-header {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 2rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+    text-align: center;
+}
+
+.modal-medicine-brand {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.modal-medicine-name {
+    font-size: 1.25rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.modal-medicine-category {
+    display: inline-block;
+    background: #4a6cf7;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Card hover effects */
+.medicine-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4a6cf7, #764ba2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.medicine-card:hover::after {
+    opacity: 1;
+}
+
+/* Modal styles */
+.modal-usage {
+    font-size: 1.1rem;
+    color: #6c757d;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.modal-usage strong {
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Improved Search within results */
+.search-within-container {
+    background: #f8f9fa;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #e9ecef;
+}
+
+.search-within-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.search-within-header h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+    margin: 0;
+}
+
+.search-within-stats {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.search-within-input-container {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-within-input {
+    width: 100%;
+    padding: 0.875rem 1.25rem 0.875rem 3rem;
+    font-size: 1rem;
+    border-radius: 50px;
+    border: 2px solid #dee2e6;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.search-within-input:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 0.2rem rgba(74, 108, 247, 0.15);
+    background: white;
+}
+
+.search-within-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 1.25rem;
+}
+
+.search-within-clear {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1.25rem;
+    display: none;
+}
+
+.search-within-clear:hover {
+    color: #dc3545;
+}
+
+.search-within-input:not(:placeholder-shown) + .search-within-clear {
+    display: block;
+}
+
+/* Sort controls */
+.sort-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sort-btn {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
+    color: #495057;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.sort-btn:hover {
+    background: #e9ecef;
+    border-color: #ced4da;
+}
+
+.sort-btn.active {
+    background: #4a6cf7;
+    color: white;
+    border-color: #4a6cf7;
+    box-shadow: 0 2px 4px rgba(74, 108, 247, 0.2);
+}
+
+.sort-btn i {
+    font-size: 1rem;
+}
+
+/* Chart container for modal */
+.modal-chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 1rem;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: none;
+    text-align: center;
+    padding: 3rem;
+    grid-column: 1 / -1;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: #4a6cf7;
+}
+
+/* Pagination */
+.pagination-container {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.pagination-info {
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 0.5rem;
+}
+
+.page-item {
+    margin: 0 0.1rem;
+}
+
+.page-link {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    color: #495057;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 2.5rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.page-link:hover {
+    background: #e9ecef;
+    border-color: #ced4da;
+    color: #495057;
+}
+
+.page-item.active .page-link {
+    background: #4a6cf7;
+    border-color: #4a6cf7;
+    color: white;
+}
+
+.page-item.disabled .page-link {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Results counter */
+.results-counter {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 0.75rem;
+    text-align: center;
+}
+
+.results-counter span {
+    color: #4a6cf7;
+    font-weight: 600;
+}
+
+/* Fixed height for consistent grid */
+.medicine-item {
+    height: 220px;
+}
+
+/* Empty grid state */
+.empty-grid-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.empty-grid-message i {
+    font-size: 3rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+    display: block;
+}
+{% endblock style %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="col-lg-9 col-xl-10 main-content" id="mainContent">
+    <div class="p-3 p-md-4">
+        <!-- Search Hero Section -->
+        <div class="search-hero">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10 text-center">
+                        <h1>Find Medicines</h1>
+                        <p>Search for medicines by symptoms or usage to find appropriate options.</p>
+                        
+                        <!-- Search Input -->
+                        <div class="search-container">
+                            <form id="searchForm" method="POST" action="{% url 'searchMed' %}">
+                                {% csrf_token %}
+                                <div class="search-input-group">
+                                    <i class="material-icons search-icon">search</i>
+                                    <input type="text" 
+                                           class="form-control search-input" 
+                                           id="medicineSearch" 
+                                           name="usage"
+                                           placeholder="Search for medicines by usage (e.g., headache, fever, cough, pain, allergy...)"
+                                           autocomplete="off"
+                                           value="{{ search_term|default:'' }}">
+                                    <button type="submit" class="btn btn-primary search-btn" id="searchButton">
+                                        <i class="material-icons align-middle me-1">search</i>
+                                        Search
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Searching medicines...</p>
+        </div>
+
+        <!-- Results Container -->
+        <div class="results-container" id="resultsContainer">
+            {% if not search_term %}
+            <!-- Initial State -->
+            <div class="initial-state" id="initialState">
+                <i class="material-icons initial-icon">medical_services</i>
+                <h4>Search for Medicines</h4>
+                <p>Enter symptoms or medicine usage above to find appropriate medicines.</p>
+            </div>
+            {% else %}
+            <!-- Results Header -->
+            <div class="results-header" id="resultsHeader">
+                <h3 class="results-count">
+                    Found <span>{{ medicines|length }}</span> medicine{{ medicines|length|pluralize }} for "{{ search_term }}"
+                </h3>
+                <div class="sort-controls">
+                    <button class="sort-btn active" data-sort="brand" data-order="asc">
+                        <i class="material-icons">sort_by_alpha</i>
+                        Brand A-Z
+                    </button>
+                    <button class="sort-btn" data-sort="name" data-order="asc">
+                        <i class="material-icons">medication</i>
+                        Medicine A-Z
+                    </button>
+                    <button class="sort-btn" data-sort="category" data-order="asc">
+                        <i class="material-icons">category</i>
+                        Category A-Z
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Improved Search within results -->
+            {% if medicines %}
+            <div class="search-within-container" id="searchWithinContainer">
+                <div class="search-within-header">
+                    <h6>Filter Results</h6>
+                    <div class="search-within-stats">
+                        Showing <span id="filteredCount">{{ medicines|length }}</span> of <span id="totalCount">{{ medicines|length }}</span> medicines
+                    </div>
+                </div>
+                <div class="search-within-input-container">
+                    <i class="material-icons search-within-icon">filter_list</i>
+                    <input type="text" 
+                           id="searchWithin" 
+                           class="form-control search-within-input" 
+                           placeholder="Type to filter results by brand, medicine, or category..."
+                           autocomplete="off">
+                    <button type="button" class="search-within-clear" id="clearSearchWithin" title="Clear filter">
+                        <i class="material-icons">close</i>
+                    </button>
+                </div>
+                <div class="results-counter" id="resultsCounter" style="display: none;">
+                    Showing <span id="visibleCount">{{ medicines|length }}</span> matching medicines
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Fixed Grid Results -->
+            <div class="results-grid-container" id="resultsGrid">
+                {% if medicines %}
+                    {% for medicine in medicines %}
+                    <div class="medicine-item" 
+                         data-medicine-id="{{ forloop.counter0 }}"
+                         data-brand="{{ medicine.brand_name|lower|default:'unknown' }}"
+                         data-name="{{ medicine.medicine_name|lower|default:'unknown' }}"
+                         data-category="{{ medicine.category|lower|default:'uncategorized' }}"
+                         data-usage="{{ medicine.usage|lower|default:'' }}">
+                        <div class="medicine-card" data-bs-toggle="modal" data-bs-target="#medicineModal{{ forloop.counter0 }}">
+                            <div class="medicine-header">
+                                <!-- Brand Name as Header -->
+                                <h3 class="medicine-brand">{{ medicine.brand_name|default:"Unknown Brand" }}</h3>
+                                <!-- Medicine Name as subheader -->
+                                <p class="medicine-name">{{ medicine.medicine_name|default:"Unknown Medicine" }}</p>
+                                {% if medicine.category %}
+                                <span class="medicine-category">{{ medicine.category }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="medicine-body">
+                                <div class="medicine-usage">
+                                    <strong>Usage:</strong>
+                                    <div class="usage-text">{{ medicine.usage|default:"Not specified" }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- No Results State -->
+                    <div class="no-results" id="noResults">
+                        <i class="material-icons no-results-icon">search_off</i>
+                        <h4>No medicines found</h4>
+                        <p class="text-muted">No medicines found for "{{ search_term }}". Try different search terms.</p>
+                        <button class="btn btn-outline-primary mt-3" id="tryAgainBtn">
+                            <i class="material-icons align-middle me-1">refresh</i>
+                            Try Again
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Empty Grid State (hidden by default) -->
+            <div class="empty-grid-message" id="emptyGridMessage" style="display: none;">
+                <i class="material-icons">filter_alt_off</i>
+                <h4>No matching results</h4>
+                <p>Try adjusting your filter to see more results.</p>
+            </div>
+            
+            <!-- Pagination -->
+            {% if medicines and medicines|length > 12 %}
+            <div class="pagination-container" id="paginationContainer">
+                <div class="pagination-info">
+                    Showing <span id="currentRange">1-12</span> of <span id="totalItems">{{ medicines|length }}</span> medicines
+                </div>
+                <nav aria-label="Results pagination">
+                    <ul class="pagination" id="resultsPagination">
+                        <!-- Pagination will be generated by JavaScript -->
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+            
+            <!-- Monthly Summary Chart -->
+            {% if monthly_summary %}
+            <div class="card mt-5" id="monthlyChartContainer">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Monthly Summary for "{{ search_term }}"</h5>
+                    <div style="height: 400px;">
+                        <canvas id="monthlySummaryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Medicine Detail Modals -->
+{% for medicine in medicines %}
+<div class="modal fade" id="medicineModal{{ forloop.counter0 }}" tabindex="-1" aria-labelledby="medicineModalLabel{{ forloop.counter0 }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="medicineModalLabel{{ forloop.counter0 }}">Medicine Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-medicine-header">
+                    <!-- Brand Name as Header -->
+                    <h3 class="modal-medicine-brand">{{ medicine.brand_name|default:"Unknown Brand" }}</h3>
+                    <!-- Medicine Name as subheader -->
+                    <p class="modal-medicine-name">{{ medicine.medicine_name|default:"Unknown Medicine" }}</p>
+                    {% if medicine.category %}
+                    <span class="modal-medicine-category">{{ medicine.category }}</span>
+                    {% endif %}
+                    <div class="modal-usage mt-3">
+                        <strong>Usage:</strong> {{ medicine.usage|default:"Not specified" }}
+                    </div>
+                </div>
+                
+                <!-- Usage Chart -->
+                {% if medicine.monthly_data %}
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Monthly Medicine Trend</h5>
+                        <div class="modal-chart-container">
+                            <canvas id="medicineChart{{ forloop.counter0 }}"></canvas>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock content %}
+
+{% block script %}
+document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const medicineSearch = document.getElementById('medicineSearch');
+    const searchForm = document.getElementById('searchForm');
+    const searchWithinInput = document.getElementById('searchWithin');
+    const clearSearchWithin = document.getElementById('clearSearchWithin');
+    const sortButtons = document.querySelectorAll('.sort-btn');
+    const resultsGrid = document.getElementById('resultsGrid');
+    const filteredCount = document.getElementById('filteredCount');
+    const totalCount = document.getElementById('totalCount');
+    const visibleCount = document.getElementById('visibleCount');
+    const currentRange = document.getElementById('currentRange');
+    const totalItems = document.getElementById('totalItems');
+    const paginationContainer = document.getElementById('paginationContainer');
+    const resultsPagination = document.getElementById('resultsPagination');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const tryAgainBtn = document.getElementById('tryAgainBtn');
+    const resultsCounter = document.getElementById('resultsCounter');
+    const emptyGridMessage = document.getElementById('emptyGridMessage');
+    const noResults = document.getElementById('noResults');
+    
+    // State
+    let currentSort = 'brand';
+    let sortOrder = 'asc';
+    let medicineItems = [];
+    let currentPage = 1;
+    let itemsPerPage = 12;
+    let filteredItems = [];
+    let allMedicineItems = [];
+    
+    // Initialize if we have search results
+    {% if search_term %}
+    initializeSearchFeatures();
+    {% if monthly_summary %}
+    initializeMonthlyChart();
+    {% endif %}
+    initializeMedicineCharts();
+    {% endif %}
+    
+    function initializeSearchFeatures() {
+        // Get all medicine items
+        medicineItems = Array.from(resultsGrid.querySelectorAll('.medicine-item'));
+        allMedicineItems = [...medicineItems];
+        filteredItems = [...medicineItems];
+        
+        // Update total counts
+        const totalMedicines = {{ medicines|length }};
+        if (totalCount) totalCount.textContent = totalMedicines;
+        if (filteredCount) filteredCount.textContent = totalMedicines;
+        if (visibleCount) visibleCount.textContent = totalMedicines;
+        if (totalItems) totalItems.textContent = totalMedicines;
+        
+        // Initialize sort buttons
+        sortButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const sortBy = this.dataset.sort;
+                
+                if (currentSort === sortBy) {
+                    sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                    this.innerHTML = `<i class="material-icons">sort_by_alpha</i> ${getSortButtonText(sortBy)} ${sortOrder === 'asc' ? 'A-Z' : 'Z-A'}`;
+                } else {
+                    sortOrder = 'asc';
+                    currentSort = sortBy;
+                    
+                    sortButtons.forEach(b => {
+                        const sortType = b.dataset.sort;
+                        b.classList.remove('active');
+                        if (sortType === sortBy) {
+                            b.classList.add('active');
+                            b.innerHTML = `<i class="material-icons">sort_by_alpha</i> ${getSortButtonText(sortBy)} A-Z`;
+                        } else {
+                            b.innerHTML = `<i class="material-icons">${getSortIcon(sortType)}</i> ${getSortButtonText(sortType)} A-Z`;
+                        }
+                    });
+                }
+                
+                sortMedicines();
+                currentPage = 1;
+                updatePagination();
+            });
+        });
+        
+        // Initialize search within
+        if (searchWithinInput) {
+            searchWithinInput.addEventListener('input', function() {
+                filterMedicines();
+            });
+            
+            if (clearSearchWithin) {
+                clearSearchWithin.addEventListener('click', function() {
+                    searchWithinInput.value = '';
+                    filterMedicines();
+                    searchWithinInput.focus();
+                });
+            }
+        }
+        
+        // Initialize pagination if needed
+        if (medicineItems.length > itemsPerPage) {
+            initializePagination();
+            showPage(1);
+        }
+    }
+    
+    function getSortButtonText(sortType) {
+        switch(sortType) {
+            case 'brand': return 'Brand';
+            case 'name': return 'Medicine';
+            case 'category': return 'Category';
+            default: return 'Sort';
+        }
+    }
+    
+    function getSortIcon(sortType) {
+        switch(sortType) {
+            case 'brand': return 'business';
+            case 'name': return 'medication';
+            case 'category': return 'category';
+            default: return 'sort';
+        }
+    }
+    
+    function filterMedicines() {
+        const searchTerm = searchWithinInput ? searchWithinInput.value.toLowerCase().trim() : '';
+        
+        filteredItems = allMedicineItems.filter(item => {
+            if (!searchTerm) return true;
+            
+            const brand = item.dataset.brand || '';
+            const name = item.dataset.name || '';
+            const category = item.dataset.category || '';
+            const usage = item.dataset.usage || '';
+            
+            return brand.includes(searchTerm) || 
+                   name.includes(searchTerm) || 
+                   category.includes(searchTerm) ||
+                   usage.includes(searchTerm);
+        });
+        
+        // Update counts
+        if (filteredCount) filteredCount.textContent = filteredItems.length;
+        if (visibleCount) visibleCount.textContent = filteredItems.length;
+        
+        // Show/hide results counter
+        if (resultsCounter) {
+            resultsCounter.style.display = searchTerm ? 'block' : 'none';
+        }
+        
+        // Show empty message if no matches
+        if (emptyGridMessage) {
+            if (filteredItems.length === 0 && allMedicineItems.length > 0) {
+                emptyGridMessage.style.display = 'block';
+                resultsGrid.style.display = 'none';
+            } else {
+                emptyGridMessage.style.display = 'none';
+                resultsGrid.style.display = 'grid';
+            }
+        }
+        
+        sortMedicines();
+        currentPage = 1;
+        updatePagination();
+    }
+    
+    function sortMedicines() {
+        filteredItems.sort((a, b) => {
+            let aValue = '';
+            let bValue = '';
+            
+            switch(currentSort) {
+                case 'brand':
+                    aValue = a.dataset.brand || '';
+                    bValue = b.dataset.brand || '';
+                    break;
+                case 'name':
+                    aValue = a.dataset.name || '';
+                    bValue = b.dataset.name || '';
+                    break;
+                case 'category':
+                    aValue = a.dataset.category || '';
+                    bValue = b.dataset.category || '';
+                    break;
+                default:
+                    aValue = a.dataset.brand || '';
+                    bValue = b.dataset.brand || '';
+            }
+            
+            aValue = aValue.toLowerCase();
+            bValue = bValue.toLowerCase();
+            
+            if (sortOrder === 'asc') {
+                return aValue.localeCompare(bValue);
+            } else {
+                return bValue.localeCompare(aValue);
+            }
+        });
+        
+        reorderMedicineItems();
+    }
+    
+    function reorderMedicineItems() {
+        resultsGrid.innerHTML = '';
+        filteredItems.forEach(item => {
+            resultsGrid.appendChild(item);
+        });
+    }
+    
+    function initializePagination() {
+        if (!resultsPagination) return;
+        
+        const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+        
+        resultsPagination.innerHTML = '';
+        
+        // Previous button
+        const prevLi = document.createElement('li');
+        prevLi.className = 'page-item';
+        prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
+        prevLi.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentPage > 1) {
+                showPage(currentPage - 1);
+            }
+        });
+        resultsPagination.appendChild(prevLi);
+        
+        // Page numbers
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+        
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            const pageLi = document.createElement('li');
+            pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+            pageLi.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(i);
+            });
+            resultsPagination.appendChild(pageLi);
+        }
+        
+        // Next button
+        const nextLi = document.createElement('li');
+        nextLi.className = 'page-item';
+        nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
+        nextLi.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentPage < totalPages) {
+                showPage(currentPage + 1);
+            }
+        });
+        resultsPagination.appendChild(nextLi);
+        
+        // Update pagination info
+        if (currentRange) {
+            const start = ((currentPage - 1) * itemsPerPage) + 1;
+            const end = Math.min(currentPage * itemsPerPage, filteredItems.length);
+            currentRange.textContent = `${start}-${end}`;
+        }
+        
+        // Update disabled states
+        resultsPagination.querySelectorAll('.page-item').forEach((item, index) => {
+            if (index === 0) {
+                if (currentPage === 1) item.classList.add('disabled');
+            } else if (index === resultsPagination.children.length - 1) {
+                if (currentPage === totalPages) item.classList.add('disabled');
+            }
+        });
+    }
+    
+    function showPage(page) {
+        currentPage = page;
+        
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, filteredItems.length);
+        
+        allMedicineItems.forEach(item => {
+            item.style.display = 'none';
+        });
+        
+        for (let i = startIndex; i < endIndex; i++) {
+            if (filteredItems[i]) {
+                filteredItems[i].style.display = 'block';
+            }
+        }
+        
+        initializePagination();
+        
+        // Scroll to top of results
+        const resultsHeader = document.getElementById('resultsHeader');
+        if (resultsHeader) {
+            resultsHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+    
+    function updatePagination() {
+        if (filteredItems.length > itemsPerPage) {
+            if (paginationContainer) {
+                paginationContainer.style.display = 'block';
+            }
+            showPage(currentPage);
+        } else {
+            if (paginationContainer) {
+                paginationContainer.style.display = 'none';
+            }
+            allMedicineItems.forEach(item => {
+                item.style.display = filteredItems.includes(item) ? 'block' : 'none';
+            });
+        }
+    }
+    
+    function initializeMonthlyChart() {
+        const canvas = document.getElementById('monthlySummaryChart');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        
+        const months = [
+            {% for month in monthly_summary reversed %}
+            "{{ month.month_name|slice:':3' }} '{{ month.year|stringformat:'s'|slice:'2:4' }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+        
+        const quantities = [
+            {% for month in monthly_summary reversed %}
+            {{ month.total_qty|default:"0" }}{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+        
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(74, 108, 247, 0.8)');
+        gradient.addColorStop(1, 'rgba(74, 108, 247, 0.1)');
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Monthly Units',
+                    data: quantities,
+                    backgroundColor: gradient,
+                    borderColor: 'rgba(74, 108, 247, 1)',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Usage: ${context.raw.toLocaleString()} units`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                        title: { 
+                            display: true, 
+                            text: 'Total (units)',
+                            font: { size: 14, weight: 'bold' }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxRotation: 45 }
+                    }
+                }
+            }
+        });
+    }
+    
+    function initializeMedicineCharts() {
+        {% for medicine in medicines %}
+        {% if medicine.monthly_data %}
+        const canvas{{ forloop.counter0 }} = document.getElementById('medicineChart{{ forloop.counter0 }}');
+        if (canvas{{ forloop.counter0 }}) {
+            const ctx = canvas{{ forloop.counter0 }}.getContext('2d');
+            
+            const months{{ forloop.counter0 }} = [
+                {% for month in medicine.monthly_data %}
+                "{{ month.month_name }}"{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+            
+            const data{{ forloop.counter0 }} = [
+                {% for month in medicine.monthly_data %}
+                {{ month.total_qty|default:"0" }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+            
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(255, 107, 107, 0.8)');
+            gradient.addColorStop(1, 'rgba(255, 107, 107, 0.1)');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months{{ forloop.counter0 }},
+                    datasets: [{
+                        label: 'Monthly Units',
+                        data: data{{ forloop.counter0 }},
+                        backgroundColor: gradient,
+                        borderColor: 'rgba(255, 107, 107, 1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(255, 107, 107, 1)',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Usage: ${context.raw} units`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                        }
+                    }
+                }
+            });
+        }
+        {% endif %}
+        {% endfor %}
+    }
+    
+    // Show loading spinner on form submit
+    if (searchForm) {
+        searchForm.addEventListener('submit', function() {
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'block';
+            }
+        });
+    }
+    
+    // Try again button
+    if (tryAgainBtn) {
+        tryAgainBtn.addEventListener('click', function() {
+            medicineSearch.value = '';
+            medicineSearch.focus();
+        });
+    }
+    
+    // Auto-focus search input
+    if (medicineSearch) {
+        medicineSearch.focus();
+    }
+    
+    // Enter key to submit
+    if (medicineSearch) {
+        medicineSearch.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            }
+        });
+    }
+});
+{% endblock script %}
+
