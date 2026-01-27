@@ -241,7 +241,7 @@ def dashboardView(request):
         'datasets_count': datasets_count,
         'trained_models_count': trained_models_count,
         'predictions_count': predictions_count,
-        'accuracy': round(accuracy, 1),
+        'accuracy': round(accuracy, 2),
         
         # Filter options
         'categories': categories,
@@ -288,7 +288,7 @@ def uploadView(request):
 
 @login_required
 def uploadCsv(request):
-    """Handle CSV file upload and save to user-specific directory"""
+    """Handle CSV file upload with incremental data update support"""
     if request.method != 'POST':
         return redirect('uploadPage')
 
@@ -304,31 +304,11 @@ def uploadCsv(request):
     filepath = None
 
     try:
-        # Calculate file hash
-        file_hash = get_file_hash(file)
-        file.seek(0)
-
         # User-specific upload directory
         user_upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads', str(request.user.id))
         os.makedirs(user_upload_dir, exist_ok=True)
 
-        # Check if THE SAME USER already uploaded this exact content
-        existing_uploads = Upload.objects.filter(user=request.user)
-        for existing in existing_uploads:
-            # Check in user-specific directory
-            path = os.path.join(user_upload_dir, existing.filename)
-            if os.path.exists(path):
-                with open(path, 'rb') as f:
-                    if hashlib.md5(f.read()).hexdigest() == file_hash:
-                        messages.warning(request, f'You already uploaded this file as {existing.filename}.')
-                        return redirect('uploadPage')
-
-        # Check if THE SAME USER already uploaded this filename
-        if Upload.objects.filter(user=request.user, filename=file.name).exists():
-            messages.warning(request, f'You already uploaded a file with this name.')
-            return redirect('uploadPage')
-
-        # Save file to user-specific directory
+        # Save file temporarily to read
         filepath = os.path.join(user_upload_dir, file.name)
 
         with open(filepath, 'wb+') as dest:
@@ -373,24 +353,80 @@ def uploadCsv(request):
         valid_rows = valid_rows[valid_rows['qty'] >= 0]
 
         total_rows = len(df)
-        saved_rows = len(valid_rows)
-        skipped_rows = total_rows - saved_rows
+        valid_count = len(valid_rows)
+        skipped_rows = total_rows - valid_count
 
-        if saved_rows == 0:
+        if valid_count == 0:
             os.remove(filepath)
             messages.error(request, 'No valid rows to save.')
             return redirect('uploadPage')
 
-        with transaction.atomic():
-            upload_obj = Upload.objects.create(
-                user=request.user,
-                filename=file.name
-            )
+        # ==================== CHECK FOR DUPLICATES ====================
+        
+        # Create unique key for each row (date + medicine_name + brand_name + category + qty)
+        valid_rows = valid_rows.copy()
+        valid_rows['record_key'] = (
+            valid_rows['date'].dt.strftime('%Y-%m-%d') + '|' +
+            valid_rows['medicine_name'].str.lower() + '|' +
+            valid_rows['brand_name'].str.lower() + '|' +
+            valid_rows['category'].str.lower() + '|' +
+            valid_rows['qty'].astype(str)
+        )
 
+        # Get all existing records for this user
+        existing_data = MedicineData.objects.filter(
+            upload__user=request.user
+        ).values('date', 'medicine_name', 'brand_name', 'category', 'qty')
+
+        # Create keys for existing records
+        existing_keys = set()
+        for record in existing_data:
+            key = (
+                record['date'].strftime('%Y-%m-%d') + '|' +
+                record['medicine_name'].lower() + '|' +
+                record['brand_name'].lower() + '|' +
+                record['category'].lower() + '|' +
+                str(int(record['qty']) if record['qty'] == int(record['qty']) else record['qty'])
+            )
+            existing_keys.add(key)
+
+        # Filter out duplicate rows
+        new_rows = valid_rows[~valid_rows['record_key'].isin(existing_keys)]
+        duplicate_count = valid_count - len(new_rows)
+
+        # ==================== HANDLE DIFFERENT SCENARIOS ====================
+
+        if len(new_rows) == 0:
+            # All records already exist
+            os.remove(filepath)
+            messages.warning(
+                request, 
+                f'No new records to add. All {valid_count} records already exist in the database.'
+            )
+            return redirect('uploadPage')
+
+        # Check if filename already exists
+        existing_upload = Upload.objects.filter(user=request.user, filename=file.name).first()
+
+        with transaction.atomic():
+            if existing_upload:
+                # Same filename - update existing upload
+                upload_obj = existing_upload
+                action_type = 'updated'
+            else:
+                # New filename - create new upload record
+                upload_obj = Upload.objects.create(
+                    user=request.user,
+                    filename=file.name
+                )
+                action_type = 'created'
+
+            # Save only new records
             batch = []
             chunk_size = 5000
+            saved_count = 0
 
-            for _, row in valid_rows.iterrows():
+            for _, row in new_rows.iterrows():
                 batch.append(
                     MedicineData(
                         upload=upload_obj,
@@ -405,28 +441,42 @@ def uploadCsv(request):
 
                 if len(batch) >= chunk_size:
                     MedicineData.objects.bulk_create(batch)
+                    saved_count += len(batch)
                     batch = []
 
             if batch:
                 MedicineData.objects.bulk_create(batch)
+                saved_count += len(batch)
 
+            # Log the action
             LogEntry.objects.create(
                 user_id=request.user.id,
                 content_type_id=ContentType.objects.get_for_model(Upload).pk,
-                object_id=upload_obj.id,
+                object_id=str(upload_obj.id),
                 object_repr=file.name,
-                action_flag=ADDITION,
-                change_message=f'{saved_rows} records added, {skipped_rows} skipped'
+                action_flag=ADDITION if action_type == 'created' else CHANGE,
+                change_message=f'{saved_count} new records added, {duplicate_count} duplicates skipped, {skipped_rows} invalid rows skipped'
             )
 
-        messages.success(request, f'{saved_rows} records uploaded, {skipped_rows} skipped.')
+        # Build success message
+        if duplicate_count > 0:
+            messages.success(
+                request, 
+                f'{saved_count} new records added. {duplicate_count} duplicate records skipped.'
+            )
+        else:
+            messages.success(request, f'{saved_count} records uploaded successfully.')
+
         return redirect('uploadPage')
 
     except Exception as e:
         if filepath and os.path.exists(filepath):
             os.remove(filepath)
-        messages.error(request, str(e))
+        import traceback
+        print(traceback.format_exc())
+        messages.error(request, f'Upload error: {str(e)}')
         return redirect('uploadPage')
+
 # end upload views
 
 # training views

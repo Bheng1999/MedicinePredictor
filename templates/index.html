@@ -904,6 +904,196 @@
         border-color: var(--danger);
     }
 
+    /* ==================== HELP MODAL STYLES ==================== */
+    .help-modal .modal-dialog {
+        max-width: 800px;
+    }
+
+    .help-modal .modal-body {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .help-tabs .nav-link {
+        color: var(--gray);
+        font-weight: 600;
+        padding: 0.75rem 1.25rem;
+        border: none;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .help-tabs .nav-link:hover {
+        color: var(--primary);
+        border-color: rgba(74, 108, 247, 0.3);
+    }
+
+    .help-tabs .nav-link.active {
+        color: var(--primary);
+        background: transparent;
+        border-color: var(--primary);
+    }
+
+    .help-section {
+        padding: 1.5rem 0;
+    }
+
+    .help-section h5 {
+        color: var(--dark);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .help-section h5 i {
+        color: var(--primary);
+    }
+
+    .help-section p {
+        color: var(--gray);
+        line-height: 1.7;
+    }
+
+    .help-card {
+        background: linear-gradient(135deg, rgba(74, 108, 247, 0.05), rgba(118, 75, 162, 0.05));
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--primary);
+    }
+
+    .help-card h6 {
+        color: var(--dark);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .help-card p {
+        color: var(--gray);
+        margin-bottom: 0;
+        font-size: 0.95rem;
+    }
+
+    .faq-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+
+    .faq-question {
+        background: white;
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        color: var(--dark);
+        transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+        background: rgba(74, 108, 247, 0.05);
+    }
+
+    .faq-question i {
+        color: var(--primary);
+        transition: transform 0.3s ease;
+    }
+
+    .faq-question.active i {
+        transform: rotate(180deg);
+    }
+
+    .faq-answer {
+        padding: 0 1.5rem;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background: rgba(74, 108, 247, 0.02);
+    }
+
+    .faq-answer.show {
+        padding: 1rem 1.5rem;
+        max-height: 500px;
+    }
+
+    .faq-answer p {
+        margin-bottom: 0;
+        color: var(--gray);
+        line-height: 1.7;
+    }
+
+    .step-list {
+        list-style: none;
+        padding: 0;
+        counter-reset: step-counter;
+    }
+
+    .step-list li {
+        position: relative;
+        padding-left: 3rem;
+        margin-bottom: 1.25rem;
+        counter-increment: step-counter;
+    }
+
+    .step-list li::before {
+        content: counter(step-counter);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2rem;
+        height: 2rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+    }
+
+    .step-list li strong {
+        color: var(--dark);
+    }
+
+    .contact-support-card {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 1rem;
+        padding: 2rem;
+        color: white;
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .contact-support-card h5 {
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+
+    .contact-support-card p {
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 1rem;
+    }
+
+    .contact-support-card .btn {
+        background: white;
+        color: var(--primary);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+    }
+
+    .contact-support-card .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
     /* ==================== RESPONSIVE ==================== */
     @media (max-width: 1200px) {
         .hero-section {
@@ -935,6 +1125,17 @@
 
         .floating-card {
             display: none;
+        }
+
+        .help-tabs {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+
+        .help-tabs .nav-link {
+            white-space: nowrap;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
         }
     }
 
@@ -976,6 +1177,10 @@
         .footer-bottom {
             flex-direction: column;
             text-align: center;
+        }
+
+        .help-modal .modal-dialog {
+            margin: 0.5rem;
         }
     }
 
@@ -1027,6 +1232,11 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#contact">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#helpModal">
+                        <i class="material-icons align-middle" style="font-size: 1.1rem;">help_outline</i> Help
+                    </a>
                 </li>
             </ul>
             <div class="d-flex gap-2 mt-3 mt-lg-0">
@@ -1357,6 +1567,7 @@
                 <div class="footer-links">
                     <h6>Resources</h6>
                     <a href="#contact">Contact</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#helpModal">Help Center</a>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a>
                 </div>
@@ -1378,12 +1589,230 @@
                 &copy; 2025 Eastern Visayas State University. All rights reserved.
             </div>
             <div class="footer-buttons">
+                <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#helpModal">
+                    <i class="material-icons align-middle" style="font-size: 1rem;">help</i> Help
+                </button>
                 <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
                 <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
             </div>
         </div>
     </div>
 </footer>
+
+<!-- Help Modal -->
+<div class="modal fade help-modal" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpModalLabel">
+                    <i class="material-icons">help</i> Help Center
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Help Tabs -->
+                <ul class="nav nav-tabs help-tabs mb-4" id="helpTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="getting-started-tab" data-bs-toggle="tab" data-bs-target="#getting-started" type="button" role="tab">
+                            <i class="material-icons align-middle me-1" style="font-size: 1.1rem;">rocket_launch</i> Getting Started
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="how-to-use-tab" data-bs-toggle="tab" data-bs-target="#how-to-use" type="button" role="tab">
+                            <i class="material-icons align-middle me-1" style="font-size: 1.1rem;">menu_book</i> How to Use
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="faq-tab" data-bs-toggle="tab" data-bs-target="#faq" type="button" role="tab">
+                            <i class="material-icons align-middle me-1" style="font-size: 1.1rem;">quiz</i> FAQ
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="support-tab" data-bs-toggle="tab" data-bs-target="#support" type="button" role="tab">
+                            <i class="material-icons align-middle me-1" style="font-size: 1.1rem;">support_agent</i> Support
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="helpTabsContent">
+                    <!-- Getting Started Tab -->
+                    <div class="tab-pane fade show active" id="getting-started" role="tabpanel">
+                        <div class="help-section">
+                            <h5><i class="material-icons">waving_hand</i> Welcome to MediPredict</h5>
+                            <p>MediPredict is an intelligent medicine demand prediction system designed to help pharmacies optimize their inventory management using machine learning.</p>
+                            
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">person_add</i> Step 1: Create an Account</h6>
+                                <p>Click the "Register" button and fill in your details including name, email, and a secure password. Your account will be created with pharmacist privileges.</p>
+                            </div>
+                            
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">login</i> Step 2: Login to Your Account</h6>
+                                <p>After registration, use your username and password to log in. You'll be directed to your personalized dashboard.</p>
+                            </div>
+                            
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">cloud_upload</i> Step 3: Upload Your Data</h6>
+                                <p>Navigate to the Upload section and submit your pharmacy's historical sales data in CSV format. The system will process and validate your data.</p>
+                            </div>
+                            
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">insights</i> Step 4: View Predictions</h6>
+                                <p>Once your data is processed, view demand predictions on the dashboard. Medicines are categorized as High, Medium, or Low demand.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- How to Use Tab -->
+                    <div class="tab-pane fade" id="how-to-use" role="tabpanel">
+                        <div class="help-section">
+                            <h5><i class="material-icons">dashboard</i> Using the Dashboard</h5>
+                            <p>The dashboard provides an overview of all predictions and key statistics.</p>
+                            <ul class="step-list">
+                                <li><strong>Filter by Period:</strong> Select a date range to view predictions for specific time periods.</li>
+                                <li><strong>Filter by Category/Brand:</strong> Narrow down results by medicine category or brand name.</li>
+                                <li><strong>View Charts:</strong> Interactive charts show demand distribution and trends.</li>
+                                <li><strong>Reset Filters:</strong> Click the reset button to clear all applied filters.</li>
+                            </ul>
+                        </div>
+
+                        <div class="help-section">
+                            <h5><i class="material-icons">cloud_upload</i> Uploading Data</h5>
+                            <p>To generate predictions, you need to upload historical sales data.</p>
+                            <ul class="step-list">
+                                <li><strong>Prepare CSV File:</strong> Ensure your file has columns for medicine name, category, brand, quantity sold, and date.</li>
+                                <li><strong>Upload File:</strong> Go to Upload section and select your CSV file.</li>
+                                <li><strong>Validate Data:</strong> The system will check for errors and duplicates.</li>
+                                <li><strong>Train Model:</strong> After successful upload, train the prediction model.</li>
+                            </ul>
+                        </div>
+
+                        <div class="help-section">
+                            <h5><i class="material-icons">search</i> Searching Medicines</h5>
+                            <p>Find specific medicines quickly using the search feature.</p>
+                            <ul class="step-list">
+                                <li><strong>Quick Search:</strong> Type medicine name in the search bar.</li>
+                                <li><strong>Advanced Filters:</strong> Use category and brand filters for refined results.</li>
+                                <li><strong>View Details:</strong> Click on any medicine to see detailed prediction data.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Tab -->
+                    <div class="tab-pane fade" id="faq" role="tabpanel">
+                        <div class="help-section">
+                            <h5><i class="material-icons">quiz</i> Frequently Asked Questions</h5>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    What is MediPredict?
+                                    <i class="material-icons">expand_more</i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>MediPredict is a web-based medicine demand prediction system that uses XGBoost machine learning to analyze historical pharmacy sales data and classify medicines into high, medium, or low demand categories. This helps pharmacies optimize inventory and reduce waste.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    What file format is required for data upload?
+                                    <i class="material-icons">expand_more</i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>MediPredict accepts CSV (Comma-Separated Values) files. Your file should include columns for medicine name, category, brand, quantity sold, and transaction date. A template is available in the upload section.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    How accurate are the predictions?
+                                    <i class="material-icons">expand_more</i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>The prediction accuracy depends on the quality and quantity of historical data provided. Our XGBoost model typically achieves high accuracy rates when trained with sufficient data spanning multiple months or years.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    What do High, Medium, and Low demand mean?
+                                    <i class="material-icons">expand_more</i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p><strong>High Demand:</strong> Medicines that are predicted to sell quickly and should be stocked in larger quantities.<br>
+                                    <strong>Medium Demand:</strong> Medicines with moderate sales velocity requiring regular restocking.<br>
+                                    <strong>Low Demand:</strong> Slower-moving items that can be stocked in smaller quantities to avoid expiration.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    Is my pharmacy data secure?
+                                    <i class="material-icons">expand_more</i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Yes, we take data security seriously. All data is encrypted during transmission and storage. Each user can only access their own pharmacy's data through role-based authentication.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    Can I export prediction results?
+                                    <i class="material-icons">expand_more</i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Yes, prediction results can be exported to CSV format for further analysis or reporting. Look for the export button on the predictions page.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    How often should I retrain the model?
+                                    <i class="material-icons">expand_more</i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>We recommend retraining the model whenever you upload significant new data (e.g., monthly). This ensures predictions reflect the latest sales trends and seasonal patterns.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support Tab -->
+                    <div class="tab-pane fade" id="support" role="tabpanel">
+                        <div class="help-section">
+                            <h5><i class="material-icons">support_agent</i> Need More Help?</h5>
+                            <p>If you couldn't find what you're looking for, our support team is here to help.</p>
+
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">email</i> Email Support</h6>
+                                <p>For technical issues or questions, reach out to the development team at the Eastern Visayas State University Department of Information Technology.</p>
+                            </div>
+
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">school</i> Academic Inquiries</h6>
+                                <p>For academic or research-related questions about this capstone project, please contact the College of Engineering, EVSU Tacloban.</p>
+                            </div>
+
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">bug_report</i> Report Issues</h6>
+                                <p>Found a bug or have suggestions for improvement? We appreciate your feedback to help make MediPredict better.</p>
+                            </div>
+
+                            <div class="contact-support-card">
+                                <h5><i class="material-icons align-middle me-2">contact_support</i> Contact Support Team</h5>
+                                <p>Our team is available during university hours to assist you.</p>
+                                <a href="#contact" class="btn" data-bs-dismiss="modal">
+                                    <i class="material-icons align-middle me-1">location_on</i> View Contact Info
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
@@ -1558,8 +1987,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            // Skip if it's just "#" (modal triggers)
+            if (href === '#') return;
+            
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const target = document.querySelector(href);
             if (target) {
                 const offset = 80;
                 const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
@@ -1788,5 +2221,23 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 });
+
+// FAQ Toggle Function
+function toggleFaq(element) {
+    const answer = element.nextElementSibling;
+    const isActive = element.classList.contains('active');
+    
+    // Close all other FAQs
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.classList.remove('active');
+        q.nextElementSibling.classList.remove('show');
+    });
+    
+    // Toggle current FAQ
+    if (!isActive) {
+        element.classList.add('active');
+        answer.classList.add('show');
+    }
+}
 </script>
 {% endblock script %}
