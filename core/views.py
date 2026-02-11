@@ -13,7 +13,7 @@ from django.db import transaction
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.contenttypes.models import ContentType
-from .models import User, Upload, MedicineData, ModelTrainingInfo, Prediction
+from .models import User, Upload, MedicineData, ModelTrainingInfo, Prediction, Feedback
 
 
 import joblib
@@ -1598,5 +1598,62 @@ def passwordChange(request):
 
 
 
+@login_required
+def feedback_page(request):
+    user_feedbacks = Feedback.objects.filter(user=request.user)[:5]
+    
+    context = {
+        'user_feedbacks': user_feedbacks,
+    }
+    
+    # Admin gets all feedback
+    if request.user.is_superuser or request.user.role == 'admin':
+        all_feedbacks = Feedback.objects.select_related('user').all()
+        context['all_feedbacks'] = all_feedbacks
+        context['excellent_count'] = all_feedbacks.filter(rating=5).count()
+        context['good_count'] = all_feedbacks.filter(rating=4).count()
+        context['low_count'] = all_feedbacks.filter(rating__lte=3).count()
+    
+    return render(request, 'feedback.html', context)
 
 
+@login_required
+def submit_feedback(request):
+    if request.method == 'POST':
+        subject = request.POST.get('subject', '').strip()
+        message = request.POST.get('message', '').strip()
+        rating = request.POST.get('rating', 5)
+        
+        if not subject or not message:
+            messages.error(request, 'Subject and message are required.')
+            return redirect('feedback_page')
+        
+        try:
+            rating = int(rating)
+            if rating < 1 or rating > 5:
+                rating = 5
+        except:
+            rating = 5
+        
+        Feedback.objects.create(
+            user=request.user,
+            subject=subject,
+            message=message,
+            rating=rating
+        )
+        
+        messages.success(request, 'Thank you for your feedback!')
+        return redirect('feedback_page')
+    
+    return redirect('feedback_page')
+
+@login_required
+def delete_feedback(request, feedback_id):
+    if not request.user.is_superuser and request.user.role != 'admin':
+        messages.error(request, 'Permission denied.')
+        return redirect('feedback_page')
+    
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+    feedback.delete()
+    messages.success(request, 'Feedback deleted successfully.')
+    return redirect('feedback_page')

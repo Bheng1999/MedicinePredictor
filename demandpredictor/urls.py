@@ -40,6 +40,9 @@ urlpatterns = [
     path('search/', views.searchView, name='searchPage'),
     path('search/results/', views.searchMed, name='searchMed'),
     
+    path('feedback/', views.feedback_page, name='feedback_page'),
+    path('feedback/submit/', views.submit_feedback, name='submit_feedback'),
+    path('feedback/delete/<int:feedback_id>/', views.delete_feedback, name='delete_feedback'),
     
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

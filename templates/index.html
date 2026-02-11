@@ -1235,7 +1235,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#helpModal">
-                        <i class="material-icons align-middle" style="font-size: 1.1rem;">help_outline</i> Help
+                         About & Help
                     </a>
                 </li>
             </ul>
@@ -1520,8 +1520,8 @@
                                 <p>
                                     Capstone Project for<br>
                                     BS Information Technology<br>
-                                    Academic Year 2024-2025<br>
-                                    Presented: August 2025
+                                    Academic Year 2025-2026<br>
+                                    Presented: December 2025
                                 </p>
                             </div>
                         </div>
@@ -1567,7 +1567,7 @@
                 <div class="footer-links">
                     <h6>Resources</h6>
                     <a href="#contact">Contact</a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#helpModal">Help Center</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#helpModal">About & Help</a>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a>
                 </div>
@@ -1590,7 +1590,7 @@
             </div>
             <div class="footer-buttons">
                 <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#helpModal">
-                    <i class="material-icons align-middle" style="font-size: 1rem;">help</i> Help
+                    <i class="material-icons align-middle" style="font-size: 1rem;">info</i> About & Help
                 </button>
                 <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
                 <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
@@ -1599,13 +1599,13 @@
     </div>
 </footer>
 
-<!-- Help Modal -->
+<!-- About & Help Modal -->
 <div class="modal fade help-modal" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="helpModalLabel">
-                    <i class="material-icons">help</i> Help Center
+                    <i class="material-icons">info</i> About & Help Center
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -1613,7 +1613,12 @@
                 <!-- Help Tabs -->
                 <ul class="nav nav-tabs help-tabs mb-4" id="helpTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="getting-started-tab" data-bs-toggle="tab" data-bs-target="#getting-started" type="button" role="tab">
+                        <button class="nav-link active" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab">
+                            <i class="material-icons align-middle me-1" style="font-size: 1.1rem;">info</i> About
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="getting-started-tab" data-bs-toggle="tab" data-bs-target="#getting-started" type="button" role="tab">
                             <i class="material-icons align-middle me-1" style="font-size: 1.1rem;">rocket_launch</i> Getting Started
                         </button>
                     </li>
@@ -1636,11 +1641,43 @@
 
                 <!-- Tab Content -->
                 <div class="tab-content" id="helpTabsContent">
+                    <!-- About Tab -->
+                    <div class="tab-pane fade show active" id="about" role="tabpanel">
+                        <div class="help-section">
+                            <h5><i class="material-icons">local_pharmacy</i> About MediPredict</h5>
+                            <p>MediPredict is an intelligent medicine demand prediction system designed to help Philippine pharmacies optimize their inventory management through advanced machine learning.</p>
+                            
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">psychology</i> Technology</h6>
+                                <p>Built with Django web framework and XGBoost machine learning algorithm. The system classifies medicine demand into Low, Medium, and High categories based on historical sales data and quantile-based thresholds.</p>
+                            </div>
+                            
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">school</i> Academic Project</h6>
+                                <p>This is a capstone project developed by BS Information Technology students at Eastern Visayas State University, Tacloban City for Academic Year 2024-2025.</p>
+                            </div>
+                            
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">groups</i> Development Team</h6>
+                                <p>
+                                    <strong>Josua Sapuez</strong> - Developer & Researcher<br>
+                                    <strong>Oliver P. Pomarejos</strong> - Developer & Researcher<br>
+                                    <strong>Rona Mae S. Amistoso</strong> - Developer & Researcher
+                                </p>
+                            </div>
+                            
+                            <div class="help-card">
+                                <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">verified</i> Version</h6>
+                                <p>MediPredict v1.0 - Released December 2025</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Getting Started Tab -->
-                    <div class="tab-pane fade show active" id="getting-started" role="tabpanel">
+                    <div class="tab-pane fade" id="getting-started" role="tabpanel">
                         <div class="help-section">
                             <h5><i class="material-icons">waving_hand</i> Welcome to MediPredict</h5>
-                            <p>MediPredict is an intelligent medicine demand prediction system designed to help pharmacies optimize their inventory management using machine learning.</p>
+                            <p>Follow these simple steps to start using MediPredict for your pharmacy's demand predictions.</p>
                             
                             <div class="help-card">
                                 <h6><i class="material-icons align-middle me-2" style="color: var(--primary);">person_add</i> Step 1: Create an Account</h6>
@@ -1753,16 +1790,6 @@
                                 </div>
                                 <div class="faq-answer">
                                     <p>Yes, we take data security seriously. All data is encrypted during transmission and storage. Each user can only access their own pharmacy's data through role-based authentication.</p>
-                                </div>
-                            </div>
-
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
-                                    Can I export prediction results?
-                                    <i class="material-icons">expand_more</i>
-                                </div>
-                                <div class="faq-answer">
-                                    <p>Yes, prediction results can be exported to CSV format for further analysis or reporting. Look for the export button on the predictions page.</p>
                                 </div>
                             </div>
 
@@ -1988,7 +2015,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
-            // Skip if it's just "#" (modal triggers)
             if (href === '#') return;
             
             e.preventDefault();

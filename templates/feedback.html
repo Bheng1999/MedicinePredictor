@@ -1,0 +1,1421 @@
+{% extends "navsidebar.html" %}
+
+{% block title %}
+    MediPredict | Feedback
+{% endblock title %}
+
+{% block style %}
+:root {
+    --primary: #4a6cf7;
+    --primary-dark: #3a5ce5;
+    --primary-light: #6b8cff;
+    --secondary: #764ba2;
+    --accent: #00d4ff;
+    --dark: #1a1a2e;
+    --light: #f8fafc;
+    --gray: #64748b;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+}
+
+/* ==================== PAGE HEADER ==================== */
+.page-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: 10%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.page-header p {
+    margin: 0.5rem 0 0;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+/* ==================== TAB NAVIGATION ==================== */
+.feedback-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0;
+}
+
+.feedback-tab {
+    padding: 0.875rem 1.5rem;
+    background: transparent;
+    border: none;
+    font-weight: 600;
+    color: var(--gray);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.feedback-tab i {
+    font-size: 1.25rem;
+}
+
+.feedback-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.feedback-tab:hover {
+    color: var(--primary);
+}
+
+.feedback-tab.active {
+    color: var(--primary);
+}
+
+.feedback-tab.active::after {
+    transform: scaleX(1);
+}
+
+.tab-badge {
+    background: var(--primary);
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ==================== FEEDBACK CARD ==================== */
+.feedback-card {
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.feedback-card-header {
+    background: linear-gradient(135deg, rgba(74, 108, 247, 0.05), rgba(118, 75, 162, 0.05));
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.feedback-card-header h4 {
+    margin: 0;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.feedback-card-header h4 i {
+    color: var(--primary);
+}
+
+.feedback-card-body {
+    padding: 2rem;
+}
+
+/* ==================== FORM STYLES ==================== */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-label .required {
+    color: var(--danger);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(74, 108, 247, 0.1);
+}
+
+.form-control::placeholder {
+    color: #a0aec0;
+}
+
+textarea.form-control {
+    min-height: 150px;
+    resize: vertical;
+}
+
+/* ==================== STAR RATING ==================== */
+.rating-group {
+    margin-bottom: 1.5rem;
+}
+
+.rating-label {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    cursor: pointer;
+    font-size: 2.5rem;
+    color: #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: var(--warning);
+}
+
+.star-rating label:hover {
+    transform: scale(1.1);
+}
+
+.rating-text {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--gray);
+    font-weight: 500;
+}
+
+/* ==================== SUBMIT BUTTON ==================== */
+.btn-submit {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(74, 108, 247, 0.3);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+.btn-submit i {
+    font-size: 1.25rem;
+}
+
+/* ==================== INFO CARD ==================== */
+.info-card {
+    background: linear-gradient(135deg, rgba(74, 108, 247, 0.05), rgba(118, 75, 162, 0.05));
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border-left: 4px solid var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.info-card h5 {
+    color: var(--dark);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-card h5 i {
+    color: var(--primary);
+}
+
+.info-card p {
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.info-card ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: var(--gray);
+}
+
+.info-card li {
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+}
+
+/* ==================== RECENT FEEDBACK ==================== */
+.recent-feedback {
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-top: 2rem;
+}
+
+.recent-feedback-header {
+    background: linear-gradient(135deg, rgba(74, 108, 247, 0.05), rgba(118, 75, 162, 0.05));
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.recent-feedback-header h5 {
+    margin: 0;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.recent-feedback-header h5 i {
+    color: var(--primary);
+}
+
+.feedback-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.feedback-item {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.2s ease;
+}
+
+.feedback-item:last-child {
+    border-bottom: none;
+}
+
+.feedback-item:hover {
+    background: #f8fafc;
+}
+
+.feedback-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.feedback-subject {
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0;
+}
+
+.feedback-date {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+.feedback-message {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.feedback-rating {
+    display: flex;
+    gap: 0.125rem;
+    margin-top: 0.5rem;
+}
+
+.feedback-rating i {
+    font-size: 1rem;
+    color: var(--warning);
+}
+
+.feedback-rating i.empty {
+    color: #e2e8f0;
+}
+
+.no-feedback {
+    padding: 2rem;
+    text-align: center;
+    color: var(--gray);
+}
+
+.no-feedback i {
+    font-size: 3rem;
+    color: #e2e8f0;
+    margin-bottom: 1rem;
+}
+
+.no-feedback p {
+    margin: 0;
+}
+
+/* ==================== ADMIN STATS ==================== */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.stat-icon.total {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+.stat-icon.excellent {
+    background: linear-gradient(135deg, var(--success), #059669);
+}
+
+.stat-icon.good {
+    background: linear-gradient(135deg, #84cc16, #65a30d);
+}
+
+.stat-icon.poor {
+    background: linear-gradient(135deg, var(--danger), #dc2626);
+}
+
+.stat-info h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0;
+}
+
+.stat-info p {
+    color: var(--gray);
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+/* ==================== ADMIN FEEDBACK TABLE ==================== */
+.admin-feedback-card {
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.admin-feedback-header {
+    background: linear-gradient(135deg, rgba(74, 108, 247, 0.05), rgba(118, 75, 162, 0.05));
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.admin-feedback-header h4 {
+    margin: 0;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-feedback-header h4 i {
+    color: var(--primary);
+}
+
+.filter-select {
+    padding: 0.5rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--dark);
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.feedback-table-wrapper {
+    overflow-x: auto;
+}
+
+.feedback-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.feedback-table th,
+.feedback-table td {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.feedback-table th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.feedback-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.feedback-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.feedback-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* User Info */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.user-avatar i {
+    color: white;
+    font-size: 1.25rem;
+}
+
+.user-details h6 {
+    margin: 0;
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.9rem;
+}
+
+.user-details span {
+    font-size: 0.75rem;
+    color: var(--gray);
+}
+
+/* Feedback Content */
+.feedback-content {
+    max-width: 280px;
+}
+
+.feedback-content .feedback-subject {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.feedback-content .feedback-message {
+    font-size: 0.8rem;
+    color: var(--gray);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Rating Stars */
+.rating-stars {
+    display: flex;
+    gap: 0.125rem;
+}
+
+.rating-stars i {
+    font-size: 1rem;
+    color: var(--warning);
+}
+
+.rating-stars i.empty {
+    color: #e2e8f0;
+}
+
+/* Actions */
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-action i {
+    font-size: 1.25rem;
+}
+
+.btn-view {
+    background: rgba(74, 108, 247, 0.1);
+    color: var(--primary);
+}
+
+.btn-view:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.btn-delete:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #e2e8f0;
+    margin-bottom: 1rem;
+}
+
+.empty-state h5 {
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--gray);
+    margin: 0;
+}
+
+/* ==================== MODALS ==================== */
+.modal-content {
+    border: none;
+    border-radius: 1.5rem;
+    overflow: hidden;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    padding: 1.5rem;
+}
+
+.modal-title {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.detail-row {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.detail-row:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.detail-value {
+    color: var(--gray);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.detail-value.message {
+    white-space: pre-wrap;
+    line-height: 1.7;
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    max-height: 250px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    display: block;
+    width: 100%;
+}
+
+/* Delete Modal */
+.delete-modal .modal-header {
+    background: linear-gradient(135deg, var(--danger), #dc2626);
+}
+
+.delete-warning {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.delete-warning i {
+    font-size: 4rem;
+    color: var(--danger);
+    margin-bottom: 1rem;
+}
+
+.delete-warning h5 {
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.delete-warning p {
+    color: var(--gray);
+}
+
+.modal-footer {
+    border-top: 1px solid #e2e8f0;
+    padding: 1rem 1.5rem;
+}
+
+.btn-cancel {
+    background: #e2e8f0;
+    color: var(--dark);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: #cbd5e1;
+}
+
+.btn-confirm-delete {
+    background: var(--danger);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-confirm-delete:hover {
+    background: #dc2626;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 991px) {
+    .page-header {
+        padding: 1.5rem;
+    }
+    
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .feedback-card-body {
+        padding: 1.5rem;
+    }
+    
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .admin-feedback-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 767px) {
+    .feedback-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .feedback-tab {
+        padding: 0.75rem 1rem;
+        white-space: nowrap;
+    }
+    
+    .star-rating label {
+        font-size: 2rem;
+    }
+    
+    .feedback-card-header,
+    .feedback-card-body {
+        padding: 1.25rem;
+    }
+    
+    .btn-submit {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .stats-row {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .stat-icon i {
+        font-size: 1.25rem;
+    }
+    
+    .stat-info h3 {
+        font-size: 1.25rem;
+    }
+    
+    .feedback-table th,
+    .feedback-table td {
+        padding: 0.75rem 1rem;
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .user-avatar i {
+        font-size: 1rem;
+    }
+    
+    .feedback-content {
+        max-width: 180px;
+    }
+}
+
+@media (max-width: 575px) {
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+}
+{% endblock style %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="col-lg-9 col-xl-10 main-content" id="mainContent">
+    <div class="p-3 p-md-4">
+        <div class="page-header">
+            <h1><i class="material-icons align-middle me-2">feedback</i> Feedback</h1>
+            <p>Help us improve MediPredict by sharing your thoughts and suggestions</p>
+        </div>
+
+        <!-- Tab Navigation (Admin Only) -->
+{% if request.user.is_superuser or request.user.role == 'admin' %}
+<div class="feedback-tabs">
+    <button class="feedback-tab active" onclick="switchTab('submit')">
+        <i class="material-icons">rate_review</i>
+        Submit Feedback
+    </button>
+    <button class="feedback-tab" onclick="switchTab('manage')">
+        <i class="material-icons">admin_panel_settings</i>
+        Manage Feedback
+        {% if all_feedbacks.count > 0 %}
+        <span class="tab-badge">{{ all_feedbacks.count }}</span>
+        {% endif %}
+    </button>
+</div>
+{% endif %}
+
+<!-- Submit Feedback Tab -->
+<div class="tab-content active" id="submitTab">
+    <div class="row">
+        <!-- Feedback Form -->
+        <div class="col-lg-8">
+            <div class="feedback-card">
+                <div class="feedback-card-header">
+                    <h4><i class="material-icons">rate_review</i> Share Your Feedback</h4>
+                </div>
+                <div class="feedback-card-body">
+                    <form method="POST" action="{% url 'submit_feedback' %}" id="feedbackForm">
+                        {% csrf_token %}
+                        
+                        <!-- Rating -->
+                        <div class="rating-group">
+                            <label class="rating-label">How would you rate your experience?</label>
+                            <div class="star-rating">
+                                <input type="radio" name="rating" value="5" id="star5" checked>
+                                <label for="star5" title="Excellent">
+                                    <i class="material-icons">star</i>
+                                </label>
+                                <input type="radio" name="rating" value="4" id="star4">
+                                <label for="star4" title="Good">
+                                    <i class="material-icons">star</i>
+                                </label>
+                                <input type="radio" name="rating" value="3" id="star3">
+                                <label for="star3" title="Average">
+                                    <i class="material-icons">star</i>
+                                </label>
+                                <input type="radio" name="rating" value="2" id="star2">
+                                <label for="star2" title="Poor">
+                                    <i class="material-icons">star</i>
+                                </label>
+                                <input type="radio" name="rating" value="1" id="star1">
+                                <label for="star1" title="Terrible">
+                                    <i class="material-icons">star</i>
+                                </label>
+                            </div>
+                            <div class="rating-text" id="ratingText">Excellent</div>
+                        </div>
+                        
+                        <!-- Subject -->
+                        <div class="form-group">
+                            <label for="subject" class="form-label">
+                                Subject <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="subject" 
+                                name="subject" 
+                                placeholder="Brief summary of your feedback"
+                                maxlength="200"
+                                required
+                            >
+                        </div>
+                        
+                        <!-- Message -->
+                        <div class="form-group">
+                            <label for="message" class="form-label">
+                                Message <span class="required">*</span>
+                            </label>
+                            <textarea 
+                                class="form-control" 
+                                id="message" 
+                                name="message" 
+                                placeholder="Please describe your feedback, suggestion, or issue in detail..."
+                                required
+                            ></textarea>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-submit">
+                            <i class="material-icons">send</i>
+                            Submit Feedback
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Recent Feedback (User's own) -->
+            <div class="recent-feedback">
+                <div class="recent-feedback-header">
+                    <h5><i class="material-icons">history</i> Your Recent Feedback</h5>
+                </div>
+                <ul class="feedback-list">
+                    {% if user_feedbacks %}
+                        {% for feedback in user_feedbacks %}
+                        <li class="feedback-item">
+                            <div class="feedback-item-header">
+                                <h6 class="feedback-subject">{{ feedback.subject }}</h6>
+                                <span class="feedback-date">{{ feedback.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            <p class="feedback-message">{{ feedback.message }}</p>
+                            <div class="feedback-rating">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= feedback.rating %}
+                                        <i class="material-icons">star</i>
+                                    {% else %}
+                                        <i class="material-icons empty">star</i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="no-feedback">
+                            <i class="material-icons">inbox</i>
+                            <p>You haven't submitted any feedback yet.</p>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Sidebar Info -->
+        <div class="col-lg-4">
+            <div class="info-card">
+                <h5><i class="material-icons">lightbulb</i> Tips for Great Feedback</h5>
+                <ul>
+                    <li>Be specific about what you experienced</li>
+                    <li>Include steps to reproduce any issues</li>
+                    <li>Suggest improvements you'd like to see</li>
+                    <li>Let us know what features you love</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <h5><i class="material-icons">help_outline</i> What Happens Next?</h5>
+                <p>Your feedback is reviewed by our development team. We use your input to:</p>
+                <ul>
+                    <li>Fix bugs and issues</li>
+                    <li>Improve user experience</li>
+                    <li>Add new features</li>
+                    <li>Enhance system performance</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <h5><i class="material-icons">contact_support</i> Need Immediate Help?</h5>
+                <p>For urgent issues or questions, please contact the IT Department at Eastern Visayas State University.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Manage Feedback Tab (Admin Only) -->
+{% if request.user.is_superuser or request.user.role == 'admin' %}
+<div class="tab-content" id="manageTab">
+    <!-- Stats Cards -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon total">
+                <i class="material-icons">inbox</i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ all_feedbacks.count }}</h3>
+                <p>Total Feedback</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon excellent">
+                <i class="material-icons">sentiment_very_satisfied</i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ excellent_count }}</h3>
+                <p>Excellent (5★)</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon good">
+                <i class="material-icons">sentiment_satisfied</i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ good_count }}</h3>
+                <p>Good (4★)</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon poor">
+                <i class="material-icons">sentiment_dissatisfied</i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ low_count }}</h3>
+                <p>Poor (1-3★)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Table -->
+    <div class="admin-feedback-card">
+        <div class="admin-feedback-header">
+            <h4><i class="material-icons">list_alt</i> All Feedback</h4>
+            <select class="filter-select" id="ratingFilter" onchange="filterFeedback()">
+                <option value="">All Ratings</option>
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="2">2 Stars</option>
+                <option value="1">1 Star</option>
+            </select>
+        </div>
+        
+        <div class="feedback-table-wrapper">
+            {% if all_feedbacks %}
+            <table class="feedback-table" id="feedbackTable">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Feedback</th>
+                        <th>Rating</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feedback in all_feedbacks %}
+                    <tr data-rating="{{ feedback.rating }}">
+                        <td>
+                            <div class="user-info">
+                                <div class="user-avatar">
+                                    <i class="material-icons">person</i>
+                                </div>
+                                <div class="user-details">
+                                    <h6>{{ feedback.user.first_name }} {{ feedback.user.last_name }}</h6>
+                                    <span>@{{ feedback.user.username }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="feedback-content">
+                                <div class="feedback-subject">{{ feedback.subject }}</div>
+                                <div class="feedback-message">{{ feedback.message }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating-stars">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= feedback.rating %}
+                                        <i class="material-icons">star</i>
+                                    {% else %}
+                                        <i class="material-icons empty">star</i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="feedback-date">
+                                {{ feedback.created_at|date:"M d, Y" }}<br>
+                                <small>{{ feedback.created_at|time:"g:i A" }}</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewModal{{ feedback.id }}" title="View Details">
+                                    <i class="material-icons">visibility</i>
+                                </button>
+                                <button class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal{{ feedback.id }}" title="Delete">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="material-icons">inbox</i>
+                <h5>No Feedback Yet</h5>
+                <p>User feedback will appear here once submitted.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- View Modals -->
+{% for feedback in all_feedbacks %}
+<div class="modal fade" id="viewModal{{ feedback.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="material-icons">visibility</i> Feedback Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="detail-row">
+                            <div class="detail-label">User</div>
+                            <div class="detail-value">{{ feedback.user.first_name }} {{ feedback.user.last_name }} (@{{ feedback.user.username }})</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-row">
+                            <div class="detail-label">Date Submitted</div>
+                            <div class="detail-value">{{ feedback.created_at|date:"F d, Y \a\t g:i A" }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="detail-row">
+                            <div class="detail-label">Subject</div>
+                            <div class="detail-value">{{ feedback.subject }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-row">
+                            <div class="detail-label">Rating</div>
+                            <div class="detail-value">
+                                <div class="rating-stars">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= feedback.rating %}
+                                            <i class="material-icons">star</i>
+                                        {% else %}
+                                            <i class="material-icons empty">star</i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Message</div>
+                    <div class="detail-value message">{{ feedback.message|linebreaks }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade delete-modal" id="deleteModal{{ feedback.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="material-icons">warning</i> Delete Feedback
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-warning">
+                    <i class="material-icons">delete_forever</i>
+                    <h5>Are you sure?</h5>
+                    <p>This will permanently delete the feedback from <strong>{{ feedback.user.username }}</strong>. This action cannot be undone.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{% url 'delete_feedback' feedback.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-confirm-delete">
+                        <i class="material-icons align-middle me-1" style="font-size: 1.1rem;">delete</i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+document.addEventListener('DOMContentLoaded', function() {
+    // Rating text update
+    const ratingInputs = document.querySelectorAll('input[name="rating"]');
+    const ratingText = document.getElementById('ratingText');
+    
+    const ratingLabels = {
+        '5': 'Excellent',
+        '4': 'Good',
+        '3': 'Average',
+        '2': 'Poor',
+        '1': 'Terrible'
+    };
+    
+    ratingInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            ratingText.textContent = ratingLabels[this.value];
+        });
+    });
+    
+    // Form validation
+    const form = document.getElementById('feedbackForm');
+    const subjectInput = document.getElementById('subject');
+    const messageInput = document.getElementById('message');
+    
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Validate subject
+        if (subjectInput.value.trim() === '') {
+            subjectInput.style.borderColor = 'var(--danger)';
+            isValid = false;
+        } else {
+            subjectInput.style.borderColor = '#e2e8f0';
+        }
+        
+        // Validate message
+        if (messageInput.value.trim() === '') {
+            messageInput.style.borderColor = 'var(--danger)';
+            isValid = false;
+        } else {
+            messageInput.style.borderColor = '#e2e8f0';
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+    
+    // Clear validation on input
+    subjectInput.addEventListener('input', function() {
+        this.style.borderColor = '#e2e8f0';
+    });
+    
+    messageInput.addEventListener('input', function() {
+        this.style.borderColor = '#e2e8f0';
+    });
+});
+
+// Tab switching function
+function switchTab(tab) {
+    // Update tab buttons
+    document.querySelectorAll('.feedback-tab').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.currentTarget.classList.add('active');
+    
+    // Update tab content
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    if (tab === 'submit') {
+        document.getElementById('submitTab').classList.add('active');
+    } else if (tab === 'manage') {
+        document.getElementById('manageTab').classList.add('active');
+    }
+}
+
+// Filter feedback by rating
+function filterFeedback() {
+    const ratingFilter = document.getElementById('ratingFilter').value;
+    const rows = document.querySelectorAll('#feedbackTable tbody tr');
+    
+    rows.forEach(row => {
+        const rating = row.dataset.rating;
+        
+        if (ratingFilter === '' || rating === ratingFilter) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+{% endblock script %}

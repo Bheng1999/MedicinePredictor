@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from .models import (
     User, Upload, MedicineData, ModelTrainingInfo, 
-    Prediction
+    Prediction, Feedback
 )
 
 
@@ -119,3 +119,13 @@ class LogEntryAdmin(admin.ModelAdmin):
         }
         return flags.get(obj.action_flag, obj.action_flag)
     action_flag.short_description = 'Action'
+
+
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'user', 'rating', 'created_at')
+    list_filter = ('rating', 'created_at')
+    search_fields = ('subject', 'message', 'user__username', 'user__first_name', 'user__last_name')
+    readonly_fields = ('created_at',)
+    ordering = ('-created_at',)

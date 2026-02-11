@@ -172,3 +172,15 @@ class Prediction(models.Model):
     def __str__(self):
         return f"{self.medicine_name or 'Unknown'} - {self.predicted_demand}"
 
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedbacks')
+    subject = models.CharField(max_length=200)
+    message = models.TextField()
+    rating = models.IntegerField(default=5)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.subject[:30]}"
